@@ -8,16 +8,12 @@
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
         <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap-grid.css">
-        
+
 		<title>Liga Desportiva da 20</title>
     </head>
-    <body>
-        <!--#include virtual="/templates/footer.html" -->
-		<!--#include virtual="templates/tabs.html" -->      
-                
-
+    <body>        
         <h3>Classificação</h3>
-        <table class="table table-striped">
+        <table class="table table-striped display" id="example" style="width:100%">
             <thead>
                 <tr>
                     <th>Posição</th>
@@ -46,7 +42,7 @@
                     <td>0</td>
                     <td>3</td>
                     <td>100</td>      
-                </tr>
+                </tr>                
             </tbody>
         </table>
         </div>

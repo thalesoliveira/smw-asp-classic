@@ -1,0 +1,65 @@
+body {
+    padding-top: 12.0rem;
+    padding-bottom: 4.2rem;
+    background: #fff;
+}
+
+a {
+    text-decoration: none !important;
+}
+
+h1,
+h2,
+h3 {
+    font-family: 'Helvetica', 'Arial', 'sans-serif';
+}
+
+.dv-form {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    padding: 1rem;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    background-color: #032f62;
+    background-clip: padding-box;
+    border: 1px solid #032f62;
+    border-radius: 1.1rem;
+    outline: 0;
+    max-width: 500px;
+}
+
+.message {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    padding: 1rem;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;    
+    background-clip: padding-box;    
+    border-radius: 1.1rem;
+    outline: 0;
+    max-width: 500px;
+    
+}
+
+.text-white {
+    color: #fff !important;
+}
+
+.text-upper {
+    text-transform: uppercase;
+}
+
+.btn-border {
+    border-radius: 50px;
+}
+
+.btn-color {
+    background-color: #2ebc4f;
+    border-color: #2ebc4f;
+}

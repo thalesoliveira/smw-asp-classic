@@ -1,4 +1,56 @@
+<!-- #include virtual="/config/conexao.asp" -->
+<%
+response.expires = 0
+action = trim(lcase(request("action")))
 
+Dim rs, login, message
+
+If session("currentUser") = "" Then 
+    Select case action
+        case "login"
+
+            email = trim(replace(request("email"),"'","''"))
+            password = trim(replace(request("password"),"'","''"))
+
+            If email = "" Then
+                message = "email is required! <br/>"
+            End If
+            If password = "" Then
+                message = message & "password is required! <br/>"
+            End If
+
+            If message = "" Then
+                sql = "SELECT * FROM t_user WHERE desc_login ='" & email & "'"
+                Set rs = objConn.Execute(sql)
+            
+                If rs.EOF Then
+                    login = false
+                    message = message & "email not found! <br/>"
+                Else
+                    login = true
+                End If
+
+                If login Then
+                    sql = "SELECT * FROM t_user WHERE desc_login ='" & email & "' AND desc_password = '" & password & "'"
+                    Set rs = objConn.Execute(sql)    
+                    
+                    If rs.EOF Then
+                        message = " user not found! <br/>"
+                    Else
+                        Response.redirect("home.asp")
+                    End If
+                End If
+
+            End If            
+
+        case "logout"
+            Session.Abandon()
+        
+    End select
+
+End If
+
+%>
 <!doctype html>
 <html lang="pt">
     <head>
@@ -7,101 +59,48 @@
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap-grid.min.css">
+
+        <link rel="stylesheet" href="../assets/style.css">
+
         <script src="../node_modules/jquery/dist/jquery.min.js"></script>
 
 		<title>Login</title>
     </head>
-
-
-
-<body>
-    <div class="container">
-        <div class="row">
-			<div class="col-md-5 mx-auto">
-			<div id="first">
-				<div class="myform form ">
-					 <div class="logo mb-3">
-						 <div class="col-md-12 text-center">
-							<h1>Login</h1>
-						 </div>
-					</div>
-                   <form action="" method="post" name="login">
-                           <div class="form-group">
-                              <label for="exampleInputEmail1">Email address</label>
-                              <input type="email" name="email"  class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
+    <body>
+        <div class="container">
+            <div class="row">             
+			    <div class="col-md-6 mx-auto">
+                    <% 
+                    If Not message = "" Then
+                        response.write ("<div class='alert alert-danger message' role='alert'>" & message & "</div>") 
+                    End if 
+                    %>
+				    <div class="dv-form form">
+					     <div class="logo mb-3">                          
+						    <div class="col-md-12 text-center">
+							    <h1 class="text-white">Login</h1>
+						    </div>
+					    </div>                       
+                        <form action="" method="post" name="login">
+                            
+                            <div class="form-group">
+                                <label for="email" class="text-white">Email address</label>
+                                <input type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" required>
                            </div>
                            <div class="form-group">
-                              <label for="exampleInputEmail1">Password</label>
-                              <input type="password" name="password" id="password"  class="form-control" aria-describedby="emailHelp" placeholder="Enter Password">
+                                <label for="password" class="text-white">Password</label>
+                                <input type="password" name="password" id="password"  class="form-control" aria-describedby="emailHelp" placeholder="Enter Password" required>
                            </div>
                            <div class="form-group">
-                              <p class="text-center">By signing up you accept our <a href="#">Terms Of Use</a></p>
+                                <p class="text-center text-white">By signing up you accept our <a href="#">Terms Of Use</a></p>
                            </div>
                            <div class="col-md-12 text-center ">
-                              <button type="submit" class=" btn btn-block mybtn btn-primary tx-tfm">Login</button>
-                           </div>
-                           <div class="col-md-12 ">
-                              <div class="login-or">
-                                 <hr class="hr-or">
-                                 <span class="span-or">or</span>
-                              </div>
-                           </div>
-                           <div class="col-md-12 mb-3">
-                              <p class="text-center">
-                                 <a href="javascript:void();" class="google btn mybtn"><i class="fa fa-google-plus">
-                                 </i> Signup using Google
-                                 </a>
-                              </p>
-                           </div>
-                           <div class="form-group">
-                              <p class="text-center">Don't have account? <a href="#" id="signup">Sign up here</a></p>
-                           </div>
+                                <button type="submit" class=" btn btn-block btn-border btn-primary btn-color text-upper" name="action" value="login">Login</button>
+                           </div>                           
                         </form>
-                 
-				</div>
-			</div>
-			  <div id="second">
-			      <div class="myform form ">
-                        <div class="logo mb-3">
-                           <div class="col-md-12 text-center">
-                              <h1 >Signup</h1>
-                           </div>
-                        </div>
-                        <form action="#" name="registration">
-                           <div class="form-group">
-                              <label for="exampleInputEmail1">First Name</label>
-                              <input type="text"  name="firstname" class="form-control" id="firstname" aria-describedby="emailHelp" placeholder="Enter Firstname">
-                           </div>
-                           <div class="form-group">
-                              <label for="exampleInputEmail1">Last Name</label>
-                              <input type="text"  name="lastname" class="form-control" id="lastname" aria-describedby="emailHelp" placeholder="Enter Lastname">
-                           </div>
-                           <div class="form-group">
-                              <label for="exampleInputEmail1">Email address</label>
-                              <input type="email" name="email"  class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
-                           </div>
-                           <div class="form-group">
-                              <label for="exampleInputEmail1">Password</label>
-                              <input type="password" name="password" id="password"  class="form-control" aria-describedby="emailHelp" placeholder="Enter Password">
-                           </div>
-                           <div class="col-md-12 text-center mb-3">
-                              <button type="submit" class=" btn btn-block mybtn btn-primary tx-tfm">Get Started For Free</button>
-                           </div>
-                           <div class="col-md-12 ">
-                              <div class="form-group">
-                                 <p class="text-center"><a href="#" id="signin">Already have an account?</a></p>
-                              </div>
-                           </div>
-                            </div>
-                        </form>
-                     </div>
-			</div>
-		</div>
-      </div>
-
-    <script>
-
-     
-         
-</body>
+			        </div>
+		        </div>
+            </div>
+        </div>    
+    </body>
 </html>
