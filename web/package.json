@@ -1,0 +1,11 @@
+{
+  "name": "classic-asp",
+  "description": "leanring classic asp",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "4.3.1",
+    "flag-icon-css": "3.3.0",
+    "jquery": "3.4.1"
+  }
+}
