@@ -35,6 +35,7 @@ select case action
             sql = "UPDATE t_state set state = '" & state & "', initials = '" & initials & "', country_id = '" & countryId & "' WHERE state_id = " & id	           
             objConn.Execute(sql)
             call redirect("edit")
+            response.end
         end if
 
     case "create"
@@ -45,8 +46,16 @@ select case action
             sql = "INSERT INTO t_state (state, initials, country_id) VALUES ('" & state & "','" & initials & "'," & countryId & ")"
             objConn.Execute(sql)
             call redirect("create")
+            response.end
         end if
 
+    case "delete"
+        if isempty(id) then        
+            sql = "DELETE t_state WHERE state_id = " & id
+            objConn.Execute(sql)
+            response.write("ok")
+            response.end            
+        end if
     case else
         if ((trim(id) <> "" and not isnull(id)) and isnumeric(id)) then
             actionCreate = true

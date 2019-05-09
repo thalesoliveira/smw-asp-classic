@@ -37,7 +37,7 @@ action = session("action")
         <div class="container">        
             <h3 class="text-center">States</h3>            
             <div class="form-group">
-                <a href="form.asp" class="btn btn-info">Create</a>  
+                <a href="form.asp" class="btn btn-primary">Create</a>  
             </div>
           
             <div class="table-responsive">     
@@ -47,7 +47,7 @@ action = session("action")
                             <th scope="col">Name</th>                        
                             <th scope="col">Initials</th>
                             <th scope="col">Country</th>
-                            <th scope="col" style="width: 5.66%">Action</th>
+                            <th style="width: 12%" class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -60,7 +60,7 @@ action = session("action")
                         country = rs("country")
                         country_initials = rs("initials_alfa_2")
                 
-                        state_id =  rs("state_id")
+                        stateId =  rs("state_id")
                         state = rs("state")
                         initials = rs("initials")                               
                 
@@ -75,7 +75,8 @@ action = session("action")
                             <td><%=initials%></td>
                             <td><%=flag & vbcrlf & country%></td>
                             <td>
-                                <a href="form.asp?id=<%=state_id%>" class="btn btn-success" alt="Edit" title="Edit"><i class="fas fa-edit"></i></a>                            
+                                <a href="form.asp?id=<%=stateId%>" class="btn btn-default" alt="Edit" title="Edit"><i class="fas fa-edit"></i></a>                                                       
+                                <a href="#" class="btn btn-default" data-id="<%=stateId%>" data-toggle="modal" data-target="#remove-state-modal"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                     <%
@@ -87,9 +88,51 @@ action = session("action")
                 </table>
             </div>
         </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="remove-state-modal" tabindex="-1" role="dialog" aria-labelledby="remove-state-modal" aria-hidden="true">
+            <div class="modal-dialog modal-sm" role="dialog">
+                <div class="modal-content panel-warning">
+                    <div class="modal-header panel-heading">
+                        <h5 class="modal-title" id="remove-state-modal">Remove State ?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>      
+                    <div class="modal-footer">        
+                        <button type="button" id="btn-confirm-remove" class="btn btn-danger">Remove</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script type="text/javascript">
             $(document).ready(function() {
+                var id;
 
+                $('#remove-state-modal').on('show.bs.modal', function (e) {
+                    var dataId = $(e.relatedTarget).data('id');  
+                    if (typeof dataId !== 'undefined') {
+                       id = dataId;
+                    }
+                });
+
+                $('#btn-confirm-remove').click(function () { 
+                    if (typeof id !== 'undefined') {
+                        $.ajax({
+                            method: "POST",
+                            url: "del-state.asp",
+                            data: {id: id, action: "delete" }
+                        }).done(function(data) {                             
+                           location.reload();
+                        }).fail(function(textStatus) {
+                            alert(textStatus);
+                            alert(jqXHR);                        
+                        });
+                    }
+                });
+                                
                 $('.toast').toast('show');
 
                 $('#tb-country').DataTable({
