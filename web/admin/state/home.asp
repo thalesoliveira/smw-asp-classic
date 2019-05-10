@@ -1,6 +1,7 @@
-<!-- #include virtual="/config/conexao.asp" -->
+<!--#include virtual="/config/conexao.asp" -->
 <% 
 response.expires = 0
+action = session("action")
 %>
 <!doctype html>
 <html lang="pt">
@@ -10,11 +11,35 @@ response.expires = 0
         <!--#include virtual="/web/includes/header.html"--> 
 		<title>State</title>
     </head>
-
     <body>
         <!--#include virtual="/web/includes/nav.html"-->
-        <div class="container">
-            <h3>State</h3>
+
+        <% if Request.ServerVariables("HTTP_REFERER") <> "" and action <> "" then               
+                if(action = "edit") then
+                    msg = "State edited successfully!"
+                else
+                    msg = "State created successfully!"
+                end if %>
+                <div class="toast" style="position: absolute; top: 10; right: 0;  min-height: 20px;" role="alert" data-delay="700" data-autohide="false">            
+                    <div class="toast-header">                        
+                        <strong class="mr-auto">States</strong>
+                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                            <span aria-hidden="true">x</span>
+                        </button>
+                    </div>
+                <div class="toast-body">
+                <i class="fas fa-check-square"></i>
+                <%=msg%>
+            </div>
+        </div>                
+        <% end if%>
+
+        <div class="container">        
+            <h3 class="text-center">States</h3>            
+            <div class="form-group">
+                <a href="form.asp" class="btn btn-primary">Create</a>  
+            </div>
+          
             <div class="table-responsive">     
                 <table class="table table-hover table-striped" id="tb-country" style="width:100%">
                     <thead>
@@ -22,20 +47,20 @@ response.expires = 0
                             <th scope="col">Name</th>                        
                             <th scope="col">Initials</th>
                             <th scope="col">Country</th>
-                            <th scope="col" style="width: 5.66%">Action</th>
+                            <th style="width: 12%" class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                     <%
-                    sql = "SELECT tc.country, tc.initials_alfa_2, ts.state, ts.initials,  ts.state_id FROM t_state ts INNER JOIN t_country tc ON tc.country_id = ts.country_id  ;"
-                    Set rs = objConn.Execute(sql)
-                    
+                    sql = "SELECT tc.country, tc.initials_alfa_2, ts.state, ts.initials,  ts.state_id FROM t_state ts" &_
+                           " INNER JOIN t_country tc ON tc.country_id = ts.country_id  ;"
+                    Set rs = objConn.Execute(sql)                    
                     
                     do while not rs.EOF
                         country = rs("country")
                         country_initials = rs("initials_alfa_2")
                 
-                        state_id =  rs("state_id")
+                        stateId =  rs("state_id")
                         state = rs("state")
                         initials = rs("initials")                               
                 
@@ -50,7 +75,8 @@ response.expires = 0
                             <td><%=initials%></td>
                             <td><%=flag & vbcrlf & country%></td>
                             <td>
-                                <a href="form.asp?id=<%=state_id%>" class="btn btn-success" alt="Edit" title="Edit"><i class="fas fa-edit"></i></a>                            
+                                <a href="form.asp?id=<%=stateId%>" class="btn btn-default" alt="Edit" title="Edit"><i class="fas fa-edit"></i></a>                                                       
+                                <a href="#" class="btn btn-default" data-id="<%=stateId%>" data-toggle="modal" data-target="#remove-state-modal"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                     <%
@@ -62,9 +88,53 @@ response.expires = 0
                 </table>
             </div>
         </div>
-          
+
+        <!-- Modal -->
+        <div class="modal fade" id="remove-state-modal" tabindex="-1" role="dialog" aria-labelledby="remove-state-modal" aria-hidden="true">
+            <div class="modal-dialog modal-sm" role="dialog">
+                <div class="modal-content panel-warning">
+                    <div class="modal-header panel-heading">
+                        <h5 class="modal-title" id="remove-state-modal">Remove State ?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>      
+                    <div class="modal-footer">        
+                        <button type="button" id="btn-confirm-remove" class="btn btn-danger">Remove</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script type="text/javascript">
             $(document).ready(function() {
+                var id;
+
+                $('#remove-state-modal').on('show.bs.modal', function (e) {
+                    var dataId = $(e.relatedTarget).data('id');  
+                    if (typeof dataId !== 'undefined') {
+                       id = dataId;
+                    }
+                });
+
+                $('#btn-confirm-remove').click(function () { 
+                    if (typeof id !== 'undefined') {
+                        $.ajax({
+                            method: "POST",
+                            url: "del-state.asp",
+                            data: {id: id, action: "delete" }
+                        }).done(function(data) {                             
+                           location.reload();
+                        }).fail(function(textStatus) {
+                            alert(textStatus);
+                            alert(jqXHR);                        
+                        });
+                    }
+                });
+                                
+                $('.toast').toast('show');
+
                 $('#tb-country').DataTable({
                     "language": {
                         "lengthMenu": "Display _MENU_ records per page",
@@ -78,3 +148,4 @@ response.expires = 0
         </script>
     </body>
 </html>
+<% Session.Contents.Remove("action")%>
