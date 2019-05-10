@@ -13,8 +13,7 @@ CREATE TABLE t_country (
 CREATE TABLE t_state (
 	state_id int IDENTITY(1,1) NOT NULL,	
 	state varchar(50) NOT NULL,
-    description varchar(50) NOT NULL,
-	initials int,	
+    initials varchar(5) ,	
 	country_id int NOT NULL,
 	CONSTRAINT PK_t_state PRIMARY KEY (state_id),
 	CONSTRAINT FK_state_country FOREIGN KEY (country_id) REFERENCES t_country (country_id)
