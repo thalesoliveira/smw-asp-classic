@@ -124,6 +124,7 @@ end select
         <h1>Register User</h1>
             <form method="POST">
                 <input type="hidden" name="id" value="<%=id%>">
+                <input type="hidden" name="Idstate" id="Idstate" value="<%=Idstate%>">
                 <div class="form-group">
                     <label for="state">Fist Name</label>
                     <input type="text" class="form-control" id="first_name" name="first_name" value="<%=first_name%>" required>
@@ -187,12 +188,12 @@ end select
 
                 <div class="form-group">
                     <label for="country">State</label>  
-                        <span class="spinner-border spinner-border-sm" role="status" style="display: none;"></span>
-                        <select class="form-control" id="state_id" name="state_id" style="display: none;"></select>
+                    <span class="spinner-border spinner-border-sm" role="status" style="display: none;"></span>
+                    <select class="form-control" id="state_id" name="state_id" style="display: none;"></select>
                 </div>
 
                 <div class="form-group">
-                    <label for="state">Password</label>
+                    <label for="password">Password</label>
                     <input type="password" class="form-control" id="password" maxlength="10" name="password" value="" <% if id <> "" then response.write("required")%> >
                 </div>
                 
@@ -208,16 +209,19 @@ end select
         <script type="text/javascript">
             $(document).ready(function() {
 
-                var country = $('#country_id').val();
+                var country = $('#country_id').val();              
                 if (country != "") {                   
-                    $('#country_id').trigger('change');                    
+                    load_state();
                 }
 
                 $('#country_id').change(function(e) {
-                    alert('dsa');
-                    var id = $('#country_id').val();
+                    load_state();
+                });
+
+                function load_state(){
+                    var id = $('#country_id').val();                    
                     var option = '<option value="0"></option>';
-                     $(".spinner-border").show();                    
+                    $(".spinner-border").show();                    
 
                     if (typeof id !== 'undefined') {
                         $.ajax({
@@ -233,15 +237,17 @@ end select
                                     option += '<option value="'+ obj.id + '">'+ obj.name + '</option>';                                    
                                 })
                                 $('#state_id').html(option).show(); 
-                            }
-                           
+                                var Idstate = $('#Idstate').val();
+                                $("#state_id").val(Idstate);
+                            }                           
+
                         }).fail(function(textStatus) {
-                            alert(textStatus);
-                            alert(jqXHR);                        
+                            console.log(textStatus);
+                            console.log(jqXHR);                        
                         });                        
                     }
                     $(".spinner-border").hide();                   
-                })                  
+                }                
             });
         </script>
     </body>
