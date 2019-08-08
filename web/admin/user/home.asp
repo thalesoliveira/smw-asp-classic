@@ -11,16 +11,16 @@ action = session("action")
         <meta http-equiv="X-UA-Compatible" content="IE=edge">     
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">        
         <!--#include virtual="/web/includes/header.html"--> 
-		<title>State</title>
+		<title>User</title>
     </head>
     <body>
         <!--#include virtual="/web/includes/nav.html"-->
 
         <% if Request.ServerVariables("HTTP_REFERER") <> "" and action <> "" then               
                 if(action = "edit") then
-                    msg = "State edited successfully!"
+                    msg = "User edited successfully!"
                 else
-                    msg = "State created successfully!"
+                    msg = "User created successfully!"
                 end if %>
                 <div class="toast" style="position: absolute; top: 10; right: 0;  min-height: 20px;" role="alert" data-delay="700" data-autohide="false">            
                     <div class="toast-header">                        
@@ -37,9 +37,10 @@ action = session("action")
         <% end if%>
 
         <div class="container">        
-            <h3 class="text-center">States</h3>            
+            <h3 class="text-center">Users</h3>            
             <div class="form-group">
-                <a href="form.asp" class="btn btn-primary">Create</a>  
+                <a href="form.asp" class="btn btn-primary">Create User</a>                  
+                <a href="user-type.asp" class="btn btn-info">List User Type</a>                
             </div>
           
             <div class="table-responsive">     
@@ -47,38 +48,29 @@ action = session("action")
                     <thead>
                         <tr>
                             <th scope="col">Name</th>                        
-                            <th scope="col">Initials</th>
-                            <th scope="col">Country</th>
+                            <th scope="col">Mail</th>
+                            <th scope="col">User Type</th>
                             <th style="width: 12%" class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                     <%
-                    sql = "SELECT tc.country, tc.initials_alfa_2, ts.state, ts.initials,  ts.state_id FROM t_state ts" &_
-                           " INNER JOIN t_country tc ON tc.country_id = ts.country_id  ;"
+                    sql = "SELECT t_user.id, first_name, mail, type_description FROM t_user INNER JOIN t_type_user ON t_type_user.id = t_user.id ;"
                     Set rs = objConn.Execute(sql)                    
                     
                     do while not rs.EOF
-                        country = rs("country")
-                        country_initials = rs("initials_alfa_2")
-                
-                        stateId =  rs("state_id")
-                        state = rs("state")
-                        initials = rs("initials")                               
-                
-                        flag = ""
-                        flag_initials = LCase(country_initials)
-
-                        if flag_initials <> "" Then
-                            flag = "<span class='flag-icon " & "flag-icon-" & flag_initials & "'" & "></span>"
-                        end if %>
+                        name = rs("first_name")
+                        mail = rs("mail") 
+                        userId = rs("id")
+                        type_description = lcase(rs("type_description"))
+                        %>
                         <tr>
-                            <td><%=state%></td>
-                            <td><%=initials%></td>
-                            <td><%=flag & vbcrlf & country%></td>
+                            <td><%=name%></td>
+                            <td><%=mail%></td>
+                            <td><%=type_description%></td>
                             <td>
-                                <a href="form.asp?id=<%=stateId%>" class="btn btn-default" alt="Edit" title="Edit"><i class="fas fa-edit"></i></a>
-                                <a href="#" class="btn btn-default" data-id="<%=stateId%>" data-toggle="modal" data-target="#remove-state-modal"><i class="fas fa-trash"></i></a>
+                                <a href="form.asp?id=<%=userId%>" class="btn btn-default" alt="Edit" title="Edit"><i class="fas fa-edit"></i></a>                                                       
+                                <a href="#" class="btn btn-default" data-id="<%=userId%>" data-toggle="modal" data-target="#remove-state-modal"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                     <%
@@ -124,10 +116,10 @@ action = session("action")
                     if (typeof id !== 'undefined') {
                         $.ajax({
                             method: "POST",
-                            url: "action-state.asp",
+                            url: "form.asp",
                             data: {id: id, action: "delete" }
                         }).done(function(data) {                             
-                           location.reload();
+                          location.reload();                          
                         }).fail(function(textStatus) {
                             alert(textStatus);
                             alert(jqXHR);                        

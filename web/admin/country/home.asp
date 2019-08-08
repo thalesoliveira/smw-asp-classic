@@ -1,6 +1,8 @@
-<!-- #include virtual="/config/conexao.asp" -->
+<!-- #include virtual="/config/conexao.asp"-->
+<!--#include virtual="/web/src/verifiedLogin.asp"-->
 <% 
 response.expires = 0 
+call verifiedLogin()
 %>
 <!doctype html>
 <html lang="pt">
@@ -24,15 +26,19 @@ response.expires = 0
                 </thead>
                 <tbody>
                 <%
-                sql = "SELECT country, initials_alfa_2, active FROM t_country;"
+                sql = "SELECT country_id, country, initials_alfa_2, active FROM t_country;"
                 Set rs = objConn.Execute(sql)
                 do while not rs.EOF
 
+                countryId = rs("country_id")
                 country = rs("country")
                 initials = rs("initials_alfa_2")                
-                active = "Yes" 
+                active = "Yes"
+                badge = "badge-primary"
+
                 if rs("active") <> 1 Then 
-                    active = "Yes"
+                    active = "No"
+                    badge = "badge-danger"
                 end if
                 
                 flag = ""
@@ -45,7 +51,7 @@ response.expires = 0
                     <tr> 
                         <td><%=flag & vbcrlf & country%></td>
                         <td><%=initials%></td>
-                        <td><%=active%></td>
+                        <td><a href="#" data-id="<%=countryId%>" id="btn-active" class="badge badge-pill <%=badge%>"><%=active%></a></td>                         
                     </tr>
                 <%
                     rs.MoveNext 
@@ -57,6 +63,24 @@ response.expires = 0
         </div>          
         <script type="text/javascript">
             $(document).ready(function() {
+
+                $(".badge").click(function() { 
+                    var id = $(this).attr("data-id");
+
+                    if (typeof id !== 'undefined') {
+                        $.ajax({
+                            method: "POST",
+                            url: "inactive-country.asp",
+                            data: {id: id, action: "inactive" }
+                        }).done(function(data) {
+                           location.reload();
+                        }).fail(function(textStatus) {
+                            alert(textStatus);
+                            alert(jqXHR);
+                        });
+                    }
+                });
+
                 $('#tb-country').DataTable( {
                     "language": {
                     "lengthMenu": "Display _MENU_ records per page",
@@ -64,8 +88,11 @@ response.expires = 0
                     "info": "Showing page _PAGE_ of _PAGES_",
                     "infoEmpty": "No records available",
                     "infoFiltered": "(filtered from _MAX_ total records)"}
-                });
+                });                
+
             });
+
+
         </script>
     </body>
 </html>

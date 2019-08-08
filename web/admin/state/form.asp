@@ -1,6 +1,8 @@
 <!--#include virtual="/config/conexao.asp"-->
+<!--#include virtual="/web/src/verifiedLogin.asp"-->
 <%
 response.expires = 0
+call verifiedLogin()
 id = request.QueryString("id")
 action = request.Form("action")
 
@@ -103,7 +105,7 @@ end select
                     <label for="country">Country</label>
                     <select class="form-control" id="country_id" name="country_id">
                         <%
-                            sql = "SELECT country_id, country FROM t_country"
+                            sql = "SELECT country_id, country FROM t_country WHERE active = 1"
                             Set rs = objConn.Execute(sql)
 
                             do while not rs.EOF                              

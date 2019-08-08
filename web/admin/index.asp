@@ -5,7 +5,7 @@ action = trim(lcase(request("action")))
 
 Dim rs, login, message
 
-If session("currentUser") = "" Then 
+If session("user_id") = "" Then
     Select case action
         case "login"
 
@@ -20,7 +20,7 @@ If session("currentUser") = "" Then
             End If
 
             If message = "" Then
-                sql = "SELECT * FROM t_user WHERE desc_login ='" & email & "'"
+                sql = "SELECT * FROM t_user WHERE mail ='" & email & "'"
                 Set rs = objConn.Execute(sql)
             
                 If rs.EOF Then
@@ -31,23 +31,30 @@ If session("currentUser") = "" Then
                 End If
 
                 If login Then
-                    sql = "SELECT * FROM t_user WHERE desc_login ='" & email & "' AND desc_password = '" & password & "'"
+                    sql = "SELECT id FROM t_user WHERE mail ='" & email & "' AND password_key = '" & password & "'"
                     Set rs = objConn.Execute(sql)    
                     
                     If rs.EOF Then
                         message = " user not found! <br/>"
                     Else
-                        Response.redirect("home.asp")
+                        session("user_id") = rs("id")
+                        response.redirect("home.asp")
+                        response.end
                     End If
                 End If
 
-            End If            
-
-        case "logout"
-            Session.Abandon()
-        
+            End If
     End select
+Else
 
+if not session("user_id") = "" and action = "logout" then
+    Session.Abandon()    
+    response.redirect("index.asp")
+    response.end
+end if
+
+Response.redirect("home.asp")
+response.end
 End If
 
 %>
