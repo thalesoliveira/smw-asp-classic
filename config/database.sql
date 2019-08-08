@@ -49,17 +49,29 @@ CREATE TABLE t_team (
 );
 
 CREATE TABLE t_user (
-	user_id int IDENTITY(1,1) NOT NULL,
-	name varchar(50) NOT NULL,    
-    login varchar(50),
-    password varchar(50),
-    id_country int NOT NULL,
-	id_state int NOT NULL,
-	id_address int NOT NULL,
-    id_contact int NOT NULL,
-    active int DEFAULT (1) NOT NULL,
-    dt_register datetime DEFAULT (getdate()) NOT NULL,    
-	CONSTRAINT PK_t_user PRIMARY KEY (user_id),
+	id int IDENTITY(1,1) NOT NULL,
+	first_name varchar(50) NOT NULL,
+	last_name varchar(50) NOT NULL,
+	dt_register datetime NULL,
+	type_user_id int NOT NULL,
+	country_id int NOT NULL,
+	state_id int NOT NULL,
+	city varchar(50) NULL,
+	mail varchar(50) NULL,
+	password_key varchar(50) NULL,
+    CONSTRAINT PK_t_user PRIMARY KEY (id),
+);
+
+ALTER TABLE t_user ADD CONSTRAINT FK_user_country FOREIGN KEY(country_id) REFERENCES t_country (country_id);
+ALTER TABLE t_user ADD CONSTRAINT FK_user_state FOREIGN KEY(state_id) REFERENCES t_state (state_id);
+ALTER TABLE t_user ADD CONSTRAINT FK_user_type FOREIGN KEY(type_user_id) REFERENCES t_type_user (id);
+ALTER TABLE t_user ADD DEFAULT (getdate()) FOR dt_register;
+
+CREATE TABLE t_type_user(
+	id int IDENTITY(1,1) NOT NULL,
+	type_description varchar(50) NOT NULL,
+	active int NULL,
+    CONSTRAINT PK_t_type_user PRIMARY KEY (id),
 );
 
 CREATE TABLE t_address (
