@@ -56,7 +56,7 @@ CREATE TABLE t_coach (
 	coach varchar(50) NOT NULL,
     description varchar(50) NOT NULL,
 	nacionality_id int NOT NULL,
-	born_dt varchar(50),	
+	dt_born varchar(50),	
 	CONSTRAINT PK_t_coach PRIMARY KEY (coach_id),
 	CONSTRAINT FK_coach_nacionality FOREIGN KEY (nacionality_id) REFERENCES t_country (country_id)
 );
