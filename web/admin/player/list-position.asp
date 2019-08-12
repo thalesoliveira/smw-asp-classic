@@ -25,7 +25,7 @@ action = session("action")
                 end if %>
                 <div class="toast" style="position: absolute; top: 10; right: 0;  min-height: 20px;" role="alert" data-delay="700" data-autohide="false">            
                     <div class="toast-header">                        
-                        <strong class="mr-auto">User Type</strong>
+                        <strong class="mr-auto">Position</strong>
                         <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
                             <span aria-hidden="true">x</span>
                         </button>
@@ -72,7 +72,6 @@ action = session("action")
                     loop
                     set rs = Nothing
                     %>
-
                     
                     </tbody>
                 </table>                

@@ -6,6 +6,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
     "bootstrap": "^4.3.1",
+    "bootstrap-datepicker": "^1.9.0",
     "datatables.net-dt": "^1.10.19",
     "flag-icon-css": "^3.3.0",
     "jquery": "^3.4.1"
