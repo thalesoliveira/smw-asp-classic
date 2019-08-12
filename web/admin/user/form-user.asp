@@ -20,7 +20,7 @@ userIdType = request.Form("user_type_id")
 
 sub redirect(action)
     session("action") = action
-	response.redirect("home.asp")
+	response.redirect("list-form.asp")
 	response.end    
 End sub
 
@@ -202,7 +202,7 @@ end select
                 <%else%>
                     <button type="submit" name="action" class="btn btn-primary" value="create">Create</button>
                 <%end if%>
-                <a href="home.asp" class="btn btn-secondary">Voltar</a>
+                <a href="list-user.asp" class="btn btn-secondary">Voltar</a>
             </form>
         </div>
 

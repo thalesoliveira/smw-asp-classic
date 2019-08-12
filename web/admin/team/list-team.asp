@@ -11,7 +11,7 @@ action = session("action")
         <meta http-equiv="X-UA-Compatible" content="IE=edge">     
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">        
         <!--#include virtual="/web/includes/header.html"--> 
-		<title>User</title>
+		<title>Coach</title>
     </head>
     <body>
         <!--#include virtual="/web/includes/nav.html"-->
@@ -24,7 +24,7 @@ action = session("action")
                 end if %>
                 <div class="toast" style="position: absolute; top: 10; right: 0;  min-height: 20px;" role="alert" data-delay="700" data-autohide="false">            
                     <div class="toast-header">                        
-                        <strong class="mr-auto">States</strong>
+                        <strong class="mr-auto">Coach</strong>
                         <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
                             <span aria-hidden="true">x</span>
                         </button>
@@ -37,40 +37,47 @@ action = session("action")
         <% end if%>
 
         <div class="container">        
-            <h3 class="text-center">Users</h3>            
+            <h3 class="text-center">Coach</h3>            
             <div class="form-group">
-                <a href="form.asp" class="btn btn-primary">Create User</a>                  
-                <a href="user-type.asp" class="btn btn-info">List User Type</a>                
+                <a href="form-coach.asp" class="btn btn-primary">Create Coach </a>                
             </div>
           
             <div class="table-responsive">     
                 <table class="table table-hover table-striped" id="tb-country" style="width:100%">
                     <thead>
                         <tr>
-                            <th scope="col">Name</th>                        
-                            <th scope="col">Mail</th>
-                            <th scope="col">User Type</th>
+                            <th scope="col">Name</th>                            
+                            <th scope="col">Nacionality</th>
                             <th style="width: 12%" class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                     <%
-                    sql = "SELECT t_user.id, first_name, mail, type_description FROM t_user INNER JOIN t_type_user ON t_type_user.id = t_user.id ;"
-                    Set rs = objConn.Execute(sql)                    
+                    sql = "SELECT * FROM t_coach;"
+                    Set rs = objConn.Execute(sql)
                     
                     do while not rs.EOF
-                        name = rs("first_name")
-                        mail = rs("mail") 
-                        userId = rs("id")
-                        type_description = lcase(rs("type_description"))
+                        coach = rs("coach")                        
+                        id = rs("coach_id")
+                        nacionality_id = rs("nacionality_id")
+
+                        flag = ""
+                        Set rs1 = objConn.Execute("SELECT country, initials_alfa_2  FROM t_country WHERE country_id = " & nacionality_id)                 
+                        if not rs1.EOF then 
+                            country = rs1("country")
+                            initials = rs1("initials_alfa_2")                            
+                            flag_initials = LCase(initials)
+                            if flag_initials <> "" Then
+                                flag = "<span class='flag-icon " & "flag-icon-" & flag_initials & "'" & "></span>"
+                            end if
+                        end if
                         %>
                         <tr>
-                            <td><%=name%></td>
-                            <td><%=mail%></td>
-                            <td><%=type_description%></td>
+                            <td><%=coach%></td>
+                            <td><%=flag & vbcrlf & country%></td>                                                   
                             <td>
-                                <a href="form.asp?id=<%=userId%>" class="btn btn-default" alt="Edit" title="Edit"><i class="fas fa-edit"></i></a>                                                       
-                                <a href="#" class="btn btn-default" data-id="<%=userId%>" data-toggle="modal" data-target="#remove-state-modal"><i class="fas fa-trash"></i></a>
+                                <a href="form-coach.asp?id=<%=id%>" class="btn btn-default" alt="Edit" title="Edit"><i class="fas fa-edit"></i></a>                                                       
+                                <a href="#" class="btn btn-default" data-id="<%=id%>" data-toggle="modal" data-target="#remove-state-modal"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                     <%
@@ -88,7 +95,7 @@ action = session("action")
             <div class="modal-dialog modal-sm" role="dialog">
                 <div class="modal-content panel-warning">
                     <div class="modal-header panel-heading">
-                        <h5 class="modal-title" id="remove-state-modal">Remove State ?</h5>
+                        <h5 class="modal-title" id="remove-state-modal">Remove Coach ?</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -116,7 +123,7 @@ action = session("action")
                     if (typeof id !== 'undefined') {
                         $.ajax({
                             method: "POST",
-                            url: "form.asp",
+                            url: "form-coach.asp",
                             data: {id: id, action: "delete" }
                         }).done(function(data) {                             
                           location.reload();                          

@@ -21,20 +21,23 @@ call verifiedLogin()
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
                     <a class="nav-item nav-link" href="#">Home<span class="sr-only">(current)</span></a>
-			        <a class="nav-item nav-link" href="/web/admin/country/home.asp">Country<span class="sr-only"></span></a>
-                    <a class="nav-item nav-link" href="/web/admin/state/home.asp">State<span class="sr-only"></span></a>
-                    <a class="nav-item nav-link" href="/web/admin/user/home.asp">User<span class="sr-only"></span></a>
+			        <a class="nav-item nav-link" href="/web/admin/country/list-country.asp">Country<span class="sr-only"></span></a>
+                    <a class="nav-item nav-link" href="/web/admin/state/list-state.asp">State<span class="sr-only"></span></a>
+                    <a class="nav-item nav-link" href="/web/admin/user/list-user.asp">User<span class="sr-only"></span></a>
+                    <a class="nav-item nav-link" href="/web/admin/coach/list-coach.asp">Coach<span class="sr-only"></span></a>
+                    <a class="nav-item nav-link" href="/web/admin/team/list-team.asp">Team<span class="sr-only"></span></a>
                     <a class="nav-item nav-link" href="index.asp?action=logout">Logout</a>      
                 </div>
             </div>
         </nav>
         <div class="container"> 
-            <a href="/web/admin/country/home.asp" class="btn btn-primary btn-lg btn-block" alt="List Countries" title="List Countries">List Countries</a>
-            <a href="/web/admin/state/home.asp" class="btn btn-primary btn-lg btn-block" alt="List States" title="List States">List States</a>
-            <a href="/web/admin/user/home.asp" class="btn btn-secondary btn-lg btn-block" alt="List Users" title="List Users">List Users</a>
+            <a href="/web/admin/country/list-country.asp" class="btn btn-primary btn-lg btn-block" alt="List Countries" title="List Countries">List Countries</a>
+            <a href="/web/admin/state/list-state.asp" class="btn btn-primary btn-lg btn-block" alt="List States" title="List States">List States</a>
+            <a href="/web/admin/user/list-user.asp" class="btn btn-secondary btn-lg btn-block" alt="List Users" title="List Users">List Users</a>
             <a href="/web/admin/user/user-type.asp" class="btn btn-secondary btn-lg btn-block" alt="List Type Users" title="List Type Users">List Type Users</a>
             <a href="/web/admin/player/list-position.asp" class="btn btn-primary btn-lg btn-block" alt="List Position Player" title="List Position Player">List Position Player</a>
             <a href="/web/admin/coach/list-coach.asp" class="btn btn-primary btn-lg btn-block" alt="List Coach" title="List Coach">List Coach</a>
+            <a href="/web/admin/team/list-team.asp" class="btn btn-secondary btn-lg btn-block" alt="List Team" title="List Team">List Team</a>
         </div>      
     </body>
 </html>

@@ -39,7 +39,7 @@ action = session("action")
         <div class="container">        
             <h3 class="text-center">States</h3>            
             <div class="form-group">
-                <a href="form.asp" class="btn btn-primary">Create</a>  
+                <a href="form-state.asp" class="btn btn-primary">Create</a>  
             </div>
           
             <div class="table-responsive">     
@@ -77,7 +77,7 @@ action = session("action")
                             <td><%=initials%></td>
                             <td><%=flag & vbcrlf & country%></td>
                             <td>
-                                <a href="form.asp?id=<%=stateId%>" class="btn btn-default" alt="Edit" title="Edit"><i class="fas fa-edit"></i></a>
+                                <a href="form-state.asp?id=<%=stateId%>" class="btn btn-default" alt="Edit" title="Edit"><i class="fas fa-edit"></i></a>
                                 <a href="#" class="btn btn-default" data-id="<%=stateId%>" data-toggle="modal" data-target="#remove-state-modal"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
