@@ -54,16 +54,27 @@ action = session("action")
                     <tbody>
                     <%
                     sql = "SELECT * FROM t_coach;"
-                    Set rs = objConn.Execute(sql)                    
+                    Set rs = objConn.Execute(sql)
                     
                     do while not rs.EOF
                         coach = rs("coach")                        
                         id = rs("coach_id")
-                        nacionality_id = rs("nacionality_id")                   
+                        nacionality_id = rs("nacionality_id")
+
+                        flag = ""
+                        Set rs1 = objConn.Execute("SELECT country, initials_alfa_2  FROM t_country WHERE country_id = " & nacionality_id)                 
+                        if not rs1.EOF then 
+                            country = rs1("country")
+                            initials = rs1("initials_alfa_2")                            
+                            flag_initials = LCase(initials)
+                            if flag_initials <> "" Then
+                                flag = "<span class='flag-icon " & "flag-icon-" & flag_initials & "'" & "></span>"
+                            end if
+                        end if
                         %>
                         <tr>
                             <td><%=coach%></td>
-                            <td><%=coach_id%></td>                            
+                            <td><%=flag & vbcrlf & country%></td>                                                   
                             <td>
                                 <a href="form-coach.asp?id=<%=id%>" class="btn btn-default" alt="Edit" title="Edit"><i class="fas fa-edit"></i></a>                                                       
                                 <a href="#" class="btn btn-default" data-id="<%=id%>" data-toggle="modal" data-target="#remove-state-modal"><i class="fas fa-trash"></i></a>
