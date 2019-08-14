@@ -6,24 +6,15 @@ call verifiedLogin()
 coach_id = request("coach_id")
 
 if not isempty(coach_id) then
-    sql = "SELECT * FROM t_coach WHERE coach_id = " & coach_id
+    sql = "SELECT * , t_country.country_name FROM t_coach  LEFT JOIN t_country ON t_country.country_id = t_coach.coach_nacionality_id WHERE coach_id = " & coach_id
     Set rs = objConn.Execute(sql)           
     
     if not rs.EOF then
-        coach_name = rs("coach_name")
-        coach_description = rs("coach_description")
-        coach_born_date = rs("coach_born_date")
+        coach_name          = rs("coach_name")
+        coach_description   = rs("coach_description")
+        coach_born_date     = rs("coach_born_date")
         coach_nacionality_id = rs("coach_nacionality_id")
-
-
-        if not coach_nacionality_id = "" then
-            sql1 = "SELECT country_name FROM t_country WHERE country_id = " & coach_nacionality_id
-            Set rs1 = objConn.Execute(sql1)
-            if not rs1.EOF then
-                country_name    = rs1("country_name")                
-            end if
-            set rs1 = Nothing
-        end if %>
+        country_name        = rs("country_name") %>
          
     <div class="form-group">
         <span class="font-weight-bold">Name: </span><%= coach_name%><br/>
