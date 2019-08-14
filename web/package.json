@@ -9,7 +9,8 @@
     "bootstrap-datepicker": "^1.9.0",
     "datatables.net-dt": "^1.10.19",
     "flag-icon-css": "^3.3.0",
-    "jquery": "^3.4.1"
+    "jquery": "^3.4.1",
+    "jquery-mask-plugin": "^1.14.16"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.8.2"

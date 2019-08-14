@@ -24,7 +24,7 @@ action = session("action")
                 end if %>
                 <div class="toast" style="position: absolute; top: 10; right: 0;  min-height: 20px;" role="alert" data-delay="700" data-autohide="false">            
                     <div class="toast-header">                        
-                        <strong class="mr-auto">States</strong>
+                        <strong class="mr-auto">User</strong>
                         <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
                             <span aria-hidden="true">x</span>
                         </button>
@@ -40,37 +40,35 @@ action = session("action")
             <h3 class="text-center">Users</h3>            
             <div class="form-group">
                 <a href="form-user.asp" class="btn btn-primary">Create User</a>                  
-                <a href="user-type.asp" class="btn btn-info">List User Type</a>                
+                <a href="list-user-type.asp" class="btn btn-info">List User Type</a>                
             </div>
           
             <div class="table-responsive">     
-                <table class="table table-hover table-striped" id="tb-country" style="width:100%">
+                <table class="table table-hover table-striped" id="tb-user" style="width:100%">
                     <thead>
                         <tr>
-                            <th scope="col">Name</th>                        
-                            <th scope="col">Mail</th>
+                            <th scope="col">Name</th>                            
                             <th scope="col">User Type</th>
-                            <th style="width: 12%" class="text-center">Action</th>
+                            <th style="width: 15%" class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                     <%
-                    sql = "SELECT t_user.id, first_name, mail, type_description FROM t_user INNER JOIN t_type_user ON t_type_user.id = t_user.id ;"
+                    sql = "SELECT t_user.user_id, user_first_name, type_user_description FROM t_user INNER JOIN t_type_user ON t_type_user.type_user_id = t_user.user_id ;"
                     Set rs = objConn.Execute(sql)                    
                     
                     do while not rs.EOF
-                        name = rs("first_name")
-                        mail = rs("mail") 
-                        userId = rs("id")
-                        type_description = lcase(rs("type_description"))
+                        user_first_name = rs("user_first_name")
+                        user_id = rs("user_id")
+                        type_user_description = lcase(rs("type_user_description"))
                         %>
                         <tr>
-                            <td><%=name%></td>
-                            <td><%=mail%></td>
-                            <td><%=type_description%></td>
+                            <td><%=user_first_name%></td>                            
+                            <td><%=type_user_description%></td>
                             <td>
-                                <a href="form-user.asp?id=<%=userId%>" class="btn btn-default" alt="Edit" title="Edit"><i class="fas fa-edit"></i></a>                                                       
-                                <a href="#" class="btn btn-default" data-id="<%=userId%>" data-toggle="modal" data-target="#remove-state-modal"><i class="fas fa-trash"></i></a>
+                                <a href="form-user.asp?id=<%=user_id%>" class="btn btn-default" alt="Edit" title="Edit"><i class="fas fa-edit"></i></a>
+                                <a href="#" class="btn btn-default" data-id="<%=user_id%>" data-toggle="modal" data-target="#remove-user-modal"><i class="fas fa-trash"></i></a>
+                                <a href="#" class="btn btn-default info" data-id="<%=user_id%>" data-toggle="modal" data-target="#info-coach-modal"><i class="fas fa-info-circle"></i></a>
                             </td>
                         </tr>
                     <%
@@ -84,11 +82,11 @@ action = session("action")
         </div>
 
         <!-- Modal -->
-        <div class="modal fade" id="remove-state-modal" tabindex="-1" role="dialog" aria-labelledby="remove-state-modal" aria-hidden="true">
+        <div class="modal fade" id="remove-user-modal" tabindex="-1" role="dialog" aria-labelledby="remove-user-modal" aria-hidden="true">
             <div class="modal-dialog modal-sm" role="dialog">
                 <div class="modal-content panel-warning">
                     <div class="modal-header panel-heading">
-                        <h5 class="modal-title" id="remove-state-modal">Remove State ?</h5>
+                        <h5 class="modal-title" id="remove-user-modal">Remove User ?</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -101,11 +99,28 @@ action = session("action")
             </div>
         </div>
 
+        <div id="dataModal" class="modal fade">  
+            <div class="modal-dialog " role="dialog">
+                <div class="modal-content panel-info">
+                    <div class="modal-header panel-heading">
+                        <h4 class="modal-title">Info User</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>                        
+                    </div>
+                    <div class="modal-body" id="info-user"></div>  
+                    <div class="modal-footer">  
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>  
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script type="text/javascript">
             $(document).ready(function() {
                 var id;
 
-                $('#remove-state-modal').on('show.bs.modal', function (e) {
+                $('#remove-user-modal').on('show.bs.modal', function (e) {
                     var dataId = $(e.relatedTarget).data('id');  
                     if (typeof dataId !== 'undefined') {
                        id = dataId;
@@ -129,7 +144,7 @@ action = session("action")
                                 
                 $('.toast').toast('show');
 
-                $('#tb-country').DataTable({
+                $('#tb-user').DataTable({
                     "language": {
                         "lengthMenu": "Display _MENU_ records per page",
                         "zeroRecords": "Nothing found - sorry",
@@ -138,6 +153,21 @@ action = session("action")
                         "infoFiltered": "(filtered from _MAX_ total records)"
                     }
                 });
+
+                $(".info").click(function() {
+                    var user_id = $(this).attr("data-id");                    
+                    $.ajax({  
+                        url:"info-user.asp",  
+                        method:"post",  
+                        data:{user_id:user_id},  
+                        success:function(data) {  
+                            $('#info-user').html(data);  
+                            $('#dataModal').modal("show");  
+                        }  
+                    });  
+                }); 
+
+
             });
         </script>
     </body>

@@ -44,7 +44,7 @@ action = session("action")
             </div>
           
             <div class="table-responsive">     
-                <table class="table table-hover table-striped" id="tb-country" style="width:100%">
+                <table class="table table-hover table-striped" id="tb-position" style="width:100%">
                     <thead>
                         <tr>
                             <th scope="col">Description</th>                            

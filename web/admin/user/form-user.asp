@@ -9,18 +9,17 @@ action = request("action")
 
 actionCreate = false
 
-first_name = request.Form("first_name")
-last_name = request.Form("last_name")
-IdCountry = request.Form("country_id")
-IdState = request.Form("state_id")
-password = request.Form("password")
-city = request.Form("city")
-mail = request.Form("mail")
-userIdType = request.Form("user_type_id")
+user_first_name  = request.Form("user_first_name")
+user_last_name   = request.Form("user_last_name")
+id_country       = request.Form("country_id")
+id_state         = request.Form("state_id")
+user_password    = request.Form("user_password")
+user_login       = request.Form("user_login")
+user_id_type     = request.Form("user_type_id")
 
 sub redirect(action)
     session("action") = action
-	response.redirect("list-form.asp")
+	response.redirect("list-user.asp")
 	response.end    
 End sub
 
@@ -33,17 +32,18 @@ function validadeFields(field, value)
     validadeFields=msg
 End function
 
+action = "delete"
+
 dim msg_v
 select case action 
     case "save"        
-        msg_v = validadeFields("First Name",first_name)
-        msg_v = validadeFields("Last Name",last_name)       
-        msg_v = validadeFields("User Type",userTypeId)
-        msg_v = validadeFields("City",city)
-        msg_v = validadeFields("Mail",mail)
-        msg_v = validadeFields("Country",IdCountry)
-        msg_v = validadeFields("State",IdState)
-        msg_v = validadeFields("Password",password)
+        msg_v = validadeFields("First Name",user_first_name)
+        msg_v = validadeFields("Last Name",user_last_name)
+        msg_v = validadeFields("User Type",user_type_id)
+        msg_v = validadeFields("Mail/Login",user_login)
+        msg_v = validadeFields("Country",id_country)
+        msg_v = validadeFields("State",id_state)
+        msg_v = validadeFields("Password",user_password)
 
         if isempty(msg_v) then        
             sql = "UPDATE t_user set first_name = '" & first_name & "', last_name = '" & last_name & "', type_user_id = '" & userIdType & "' WHERE id = " & id                   
@@ -63,25 +63,27 @@ select case action
 
     case "create"
         
-        msg_v = validadeFields("First Name",first_name)
-        msg_v = validadeFields("Last Name",last_name)       
-        msg_v = validadeFields("User Type",userTypeId)
-        msg_v = validadeFields("City",city)
-        msg_v = validadeFields("Mail",mail)
-        msg_v = validadeFields("Country",IdCountry)
-        msg_v = validadeFields("State",IdState)
-        msg_v = validadeFields("Password",password)
+        msg_v = validadeFields("First Name",user_first_name)
+        msg_v = validadeFields("Last Name",user_last_name)
+        msg_v = validadeFields("User Type",user_type_id)
+        msg_v = validadeFields("Mail/Login",user_login)
+        msg_v = validadeFields("Country",id_country)
+        msg_v = validadeFields("State",id_state)
+        msg_v = validadeFields("Password",user_password)
 
         if isempty(msg_v) then        
-            sql = "INSERT INTO t_user (first_name, last_name, type_user_id, country_id, state_id, city , mail, password_key) VALUES ('" & first_name & "','" & last_name & "'," & userIdType & "," & IdCountry & "," & IdState & ",'" & city & "','" & mail & "','" & password & "')"
+            sql = "INSERT INTO t_user (user_first_name, user_last_name, type_user_id, country_id, state_id, user_login, user_password) VALUES ('" & user_first_name & "','" & user_last_name & "'," & user_id_type & "," & id_country & "," & id_state & ",'" & user_login & "','" & user_password & "')"
+           
             objConn.Execute(sql)
             call redirect("create")
             response.end
         end if
 
     case "delete"
-        if isempty(id) then        
-            sql = "DELETE t_user WHERE id = " & id
+        if not isempty(id) then
+
+            sql = "DELETE t_user WHERE user_id = " & id
+
             objConn.Execute(sql)
             response.write("ok")
             response.end            
@@ -89,20 +91,20 @@ select case action
     case else
         if ((trim(id) <> "" and not isnull(id)) and isnumeric(id)) then
             actionCreate = true
-            sql = "SELECT * FROM t_user WHERE id = " & id
+            sql = "SELECT * FROM t_user WHERE user_id = " & id
             Set rs = objConn.Execute(sql)
             if not rs.EOF then                
-                first_name = rs("first_name")
-                last_name = rs("last_name")
-                city = rs("city")
-                Idcountry = rs("country_id")
-                mail = rs("mail")
-                Idstate = rs("state_id")                
-                userIdType = rs("type_user_id")
+                user_first_name = rs("user_first_name")
+                user_last_name  = rs("user_last_name")                
+                id_country      = rs("country_id")
+                user_login      = rs("user_login")
+                id_state        = rs("state_id")                
+                user_id_type    = rs("type_user_id")
             end if
             set rs = Nothing    
         end if
 end select
+
 %>
 
 <!doctype html>
@@ -124,60 +126,52 @@ end select
         <h1>Register User</h1>
             <form method="POST">
                 <input type="hidden" name="id" value="<%=id%>">
-                <input type="hidden" name="Idstate" id="Idstate" value="<%=Idstate%>">
+                <input type="hidden" name="id_state" id="id_state" value="<%=id_state%>">
                 <div class="form-group">
-                    <label for="state">Fist Name</label>
-                    <input type="text" class="form-control" id="first_name" name="first_name" value="<%=first_name%>" required>
-                </div>
-                
+                    <label for="fist_name">Fist Name</label>
+                    <input type="text" class="form-control" id="user_first_name" name="user_first_name" value="<%=user_first_name%>" required>
+                </div>                
                 <div class="form-group">
-                    <label for="state">Last Name</label>
-                    <input type="text" class="form-control" id="last_name" maxlength="5" name="last_name" value="<%=last_name%>" required>
-                </div>
-
+                    <label for="last_name">Last Name</label>
+                    <input type="text" class="form-control" id="user_last_name" maxlength="5" name="user_last_name" value="<%=user_last_name%>" required>
+                </div>                
                 <div class="form-group">
-                    <label for="state">City</label>
-                    <input type="text" class="form-control" id="city" maxlength="30" name="city" value="<%=city%>"  required>
-                </div>
-
-                <div class="form-group">
-                    <label for="state">Mail</label>
-                    <input type="text" class="form-control" id="mail" maxlength="20" name="mail" value="<%=mail%>" required>
+                    <label for="mailo">Mail/Login</label>
+                    <input type="email" class="form-control" id="user_login" maxlength="20" name="user_login" value="<%=user_login%>" required>
                 </div>
 
                 <div class="form-group">
                     <label for="country">User Type</label>
                     <select class="form-control" id="user_type_id" name="user_type_id">
                         <%
-                            sql = "SELECT * FROM t_type_user WHERE active = 1"
+                            sql = "SELECT * FROM t_type_user WHERE type_user_active = 1"
                             Set rs = objConn.Execute(sql)
 
-                            do while not rs.EOF            
-                                userTypeId = rs("id")
-                                type_description = lcase(rs("type_description"))
+                            do while not rs.EOF
+                                type_user_id = rs("type_user_id")
+                                type_user_description = lcase(rs("type_user_description"))
                         %>
-                            <option value="<%=userTypeId%>" <%if userIdType = userTypeId then%> selected="selected" <%end if%>><%=type_description%></option>
+                            <option value="<%=type_user_id%>" <%if user_id_type = type_user_id then%> selected="selected" <%end if%>><%=type_user_description%></option>
                         <%
                                 rs.MoveNext
                             loop
                             set rs = Nothing
                         %>                        
                     </select>
-                </div>
-                
+                </div>                
                 <div class="form-group">
                     <label for="country">Country</label>
                     <select class="form-control" id="country_id" name="country_id">
                         <option value=""></option>
                         <%
-                            sql = "SELECT country_id, country FROM t_country WHERE active = 1"
+                            sql = "SELECT country_id, country_name FROM t_country WHERE country_active = 1"
                             Set rs = objConn.Execute(sql)
 
-                            do while not rs.EOF                              
-                                countryId = rs("country_id")
-                                country = rs("country")
+                            do while not rs.EOF
+                                country_id = rs("country_id")
+                                country_name = rs("country_name")
                         %>
-                        <option value="<%=countryId%>" <%if IdCountry = countryId then%> selected="selected" <%end if%>><%=country%></option>
+                        <option value="<%=country_id%>" <%if id_country = country_id then%> selected="selected" <%end if%>><%=country_name%></option>
                         <%
                                 rs.MoveNext
                             loop
@@ -185,16 +179,14 @@ end select
                         %>                        
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label for="country">State</label>  
                     <span class="spinner-border spinner-border-sm" role="status" style="display: none;"></span>
                     <select class="form-control" id="state_id" name="state_id" style="display: none;"></select>
                 </div>
-
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" maxlength="10" name="password" value="" <% if id <> "" then response.write("required")%> >
+                    <input type="password" class="form-control" id="user_password" maxlength="10" name="user_password" value="" <% if id <> "" then response.write("required")%> >
                 </div>
                 
                 <% if id then %>
@@ -237,8 +229,8 @@ end select
                                     option += '<option value="'+ obj.id + '">'+ obj.name + '</option>';                                    
                                 })
                                 $('#state_id').html(option).show(); 
-                                var Idstate = $('#Idstate').val();
-                                $("#state_id").val(Idstate);
+                                var id_state = $('#id_state').val();
+                                $("#state_id").val(id_state);
                             }                           
 
                         }).fail(function(textStatus) {

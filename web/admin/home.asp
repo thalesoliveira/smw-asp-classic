@@ -34,7 +34,7 @@ call verifiedLogin()
             <a href="/web/admin/country/list-country.asp" class="btn btn-primary btn-lg btn-block" alt="List Countries" title="List Countries">List Countries</a>
             <a href="/web/admin/state/list-state.asp" class="btn btn-primary btn-lg btn-block" alt="List States" title="List States">List States</a>
             <a href="/web/admin/user/list-user.asp" class="btn btn-secondary btn-lg btn-block" alt="List Users" title="List Users">List Users</a>
-            <a href="/web/admin/user/user-type.asp" class="btn btn-secondary btn-lg btn-block" alt="List Type Users" title="List Type Users">List Type Users</a>
+            <a href="/web/admin/user/list-user-type.asp" class="btn btn-secondary btn-lg btn-block" alt="List Type Users" title="List Type Users">List Type Users</a>
             <a href="/web/admin/player/list-position.asp" class="btn btn-primary btn-lg btn-block" alt="List Position Player" title="List Position Player">List Position Player</a>
             <a href="/web/admin/coach/list-coach.asp" class="btn btn-primary btn-lg btn-block" alt="List Coach" title="List Coach">List Coach</a>
             <a href="/web/admin/team/list-team.asp" class="btn btn-secondary btn-lg btn-block" alt="List Team" title="List Team">List Team</a>

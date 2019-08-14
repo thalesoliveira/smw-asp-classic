@@ -26,32 +26,32 @@ call verifiedLogin()
                 </thead>
                 <tbody>
                 <%
-                sql = "SELECT country_id, country, initials_alfa_2, active FROM t_country;"
+                sql = "SELECT country_id, country_name, country_initials_alfa_2, country_active FROM t_country;"
                 Set rs = objConn.Execute(sql)
                 do while not rs.EOF
 
-                countryId = rs("country_id")
-                country = rs("country")
-                initials = rs("initials_alfa_2")                
-                active = "Yes"
+                country_id = rs("country_id")
+                country_name = rs("country_name")
+                country_initials = rs("country_initials_alfa_2")                
+                country_active = "Yes"
                 badge = "badge-primary"
 
-                if rs("active") <> 1 Then 
-                    active = "No"
+                if rs("country_active") <> 1 Then 
+                    country_active = "No"
                     badge = "badge-danger"
                 end if
                 
                 flag = ""
-                flag_initials = LCase(initials)
+                flag_initials = LCase(country_initials)
 
                 if flag_initials <> "" Then
                     flag = "<span class='flag-icon " & "flag-icon-" & flag_initials & "'" & "></span>"
                 end if
                 %>
                     <tr> 
-                        <td><%=flag & vbcrlf & country%></td>
-                        <td><%=initials%></td>
-                        <td><a href="#" data-id="<%=countryId%>" id="btn-active" class="badge badge-pill <%=badge%>"><%=active%></a></td>                         
+                        <td><%=flag & vbcrlf & country_name %></td>
+                        <td><%=country_initials%></td>
+                        <td><a href="#" data-id="<%=country_id%>" id="btn-active" class="badge badge-pill <%=badge%>"><%=country_active%></a></td>                         
                     </tr>
                 <%
                     rs.MoveNext 
@@ -63,7 +63,6 @@ call verifiedLogin()
         </div>          
         <script type="text/javascript">
             $(document).ready(function() {
-
                 $(".badge").click(function() { 
                     var id = $(this).attr("data-id");
 
@@ -88,11 +87,8 @@ call verifiedLogin()
                     "info": "Showing page _PAGE_ of _PAGES_",
                     "infoEmpty": "No records available",
                     "infoFiltered": "(filtered from _MAX_ total records)"}
-                });                
-
+                });
             });
-
-
         </script>
     </body>
 </html>

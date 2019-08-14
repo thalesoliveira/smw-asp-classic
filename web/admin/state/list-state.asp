@@ -43,7 +43,7 @@ action = session("action")
             </div>
           
             <div class="table-responsive">     
-                <table class="table table-hover table-striped" id="tb-country" style="width:100%">
+                <table class="table table-hover table-striped" id="tb-state" style="width:100%">
                     <thead>
                         <tr>
                             <th scope="col">Name</th>                        
@@ -54,17 +54,17 @@ action = session("action")
                     </thead>
                     <tbody>
                     <%
-                    sql = "SELECT tc.country, tc.initials_alfa_2, ts.state, ts.initials,  ts.state_id FROM t_state ts" &_
+                    sql = "SELECT tc.country_name, tc.country_initials_alfa_2, ts.state_name, ts.state_initials,  ts.state_id FROM t_state ts" &_
                            " INNER JOIN t_country tc ON tc.country_id = ts.country_id  ;"
                     Set rs = objConn.Execute(sql)                    
                     
                     do while not rs.EOF
-                        country = rs("country")
-                        country_initials = rs("initials_alfa_2")
+                        country_name = rs("country_name")
+                        country_initials = rs("country_initials_alfa_2")
                 
-                        stateId =  rs("state_id")
-                        state = rs("state")
-                        initials = rs("initials")                               
+                        state_id =  rs("state_id")
+                        state_name = rs("state_name")
+                        state_initials = rs("state_initials")                               
                 
                         flag = ""
                         flag_initials = LCase(country_initials)
@@ -73,12 +73,12 @@ action = session("action")
                             flag = "<span class='flag-icon " & "flag-icon-" & flag_initials & "'" & "></span>"
                         end if %>
                         <tr>
-                            <td><%=state%></td>
-                            <td><%=initials%></td>
-                            <td><%=flag & vbcrlf & country%></td>
+                            <td><%=state_name%></td>
+                            <td><%=state_initials%></td>
+                            <td><%=flag & vbcrlf & country_name %></td>
                             <td>
-                                <a href="form-state.asp?id=<%=stateId%>" class="btn btn-default" alt="Edit" title="Edit"><i class="fas fa-edit"></i></a>
-                                <a href="#" class="btn btn-default" data-id="<%=stateId%>" data-toggle="modal" data-target="#remove-state-modal"><i class="fas fa-trash"></i></a>
+                                <a href="form-state.asp?id=<%=state_id%>" class="btn btn-default" alt="Edit" title="Edit"><i class="fas fa-edit"></i></a>
+                                <a href="#" class="btn btn-default" data-id="<%=state_id%>" data-toggle="modal" data-target="#remove-state-modal"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                     <%
@@ -137,7 +137,7 @@ action = session("action")
                                 
                 $('.toast').toast('show');
 
-                $('#tb-country').DataTable({
+                $('#tb-state').DataTable({
                     "language": {
                         "lengthMenu": "Display _MENU_ records per page",
                         "zeroRecords": "Nothing found - sorry",

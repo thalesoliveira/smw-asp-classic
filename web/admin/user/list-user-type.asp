@@ -10,7 +10,7 @@ public function isUserRegister(byval id)
     result = false
     dim rs
 
-    sql = "SELECT id FROM t_user WHERE type_user_id = " & id
+    sql = "SELECT type_user_id FROM t_user WHERE type_user_id = " & id
     set rs = objConn.Execute(sql)
     if not rs.EOF then result = true
     isUserRegister = result
@@ -56,7 +56,7 @@ end function
             </div>
           
             <div class="table-responsive">     
-                <table class="table table-hover table-striped" id="tb-country" style="width:100%">
+                <table class="table table-hover table-striped" id="tb" style="width:100%">
                     <thead>
                         <tr>
                             <th scope="col">Description</th>                            
@@ -70,25 +70,25 @@ end function
                     Set rs = objConn.Execute(sql)                    
                     
                     do while not rs.EOF
-                        description = rs("type_description")                        
-                        id = rs("id")
+                        type_user_description = rs("type_user_description")
+                        type_user_id = rs("type_user_id")
 
-                        active = "Yes"
+                        type_user_active = "Yes"
                         badge = "badge-primary"
 
-                        if rs("active") <> 1 Then 
-                            active = "No"
+                        if rs("type_user_active") <> 1 Then 
+                            type_user_active = "No"
                             badge = "badge-danger"
                         end if
                     
                         %>
                         <tr>
-                            <td><%=description%></td>
-                            <td><span class="badge badge-pill <%=badge%>"><%=active%></span></td> 
+                            <td><%=type_user_description %></td>
+                            <td><span class="badge badge-pill <%=badge%>"><%=type_user_active%></span></td>
                             <td>
-                                <a href="form-user-type.asp?id=<%=id%>" class="btn btn-default" alt="Edit" title="Edit"><i class="fas fa-edit"></i></a>
-                                <% if not isUserRegister(id) then %>
-                                <a href="#" class="btn btn-default" data-id="<%=id%>" data-toggle="modal" data-target="#remove-modal"><i class="fas fa-trash"></i></a>
+                                <a href="form-user-type.asp?id=<%=type_user_id%>" class="btn btn-default" alt="Edit" title="Edit"><i class="fas fa-edit"></i></a>
+                                <% if not isUserRegister(type_user_id) then %>
+                                <a href="#" class="btn btn-default" data-id="<%=type_user_id %>" data-toggle="modal" data-target="#remove-modal"><i class="fas fa-trash"></i></a>
                                 <% end if%>
                             </td>
                         </tr>
@@ -150,7 +150,7 @@ end function
                                 
                 $('.toast').toast('show');
 
-                $('#tb-country').DataTable({
+                $('#tb').DataTable({
                     "language": {
                         "lengthMenu": "Display _MENU_ records per page",
                         "zeroRecords": "Nothing found - sorry",

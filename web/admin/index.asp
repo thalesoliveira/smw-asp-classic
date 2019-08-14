@@ -9,18 +9,18 @@ If session("user_id") = "" Then
     Select case action
         case "login"
 
-            email = trim(replace(request("email"),"'","''"))
-            password = trim(replace(request("password"),"'","''"))
+            user_login = trim(replace(request("email"),"'","''"))
+            user_password = trim(replace(request("password"),"'","''"))
 
-            If email = "" Then
+            If user_login = "" Then
                 message = "email is required! <br/>"
             End If
-            If password = "" Then
+            If user_password = "" Then
                 message = message & "password is required! <br/>"
             End If
 
             If message = "" Then
-                sql = "SELECT * FROM t_user WHERE mail ='" & email & "'"
+                sql = "SELECT * FROM t_user WHERE user_login ='" & user_login & "'"
                 Set rs = objConn.Execute(sql)
             
                 If rs.EOF Then
@@ -31,13 +31,13 @@ If session("user_id") = "" Then
                 End If
 
                 If login Then
-                    sql = "SELECT id FROM t_user WHERE mail ='" & email & "' AND password_key = '" & password & "'"
+                    sql = "SELECT user_id FROM t_user WHERE user_login ='" & user_login & "' AND user_password = '" & user_password & "'"
                     Set rs = objConn.Execute(sql)    
                     
                     If rs.EOF Then
                         message = " user not found! <br/>"
                     Else
-                        session("user_id") = rs("id")
+                        session("user_id") = rs("user_id")
                         response.redirect("home.asp")
                         response.end
                     End If

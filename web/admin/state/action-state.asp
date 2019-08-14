@@ -17,38 +17,33 @@ select case action
             response.write(err)
             response.end            
         end if
-
     case "search"               
         if not isempty(id) then
-            sql = "SELECT state_id, state FROM t_state WHERE country_id = " & id            
+            sql = "SELECT state_id, state_name FROM t_state WHERE country_id = " & id            
             Set rs = objConn.Execute(sql)
 
             if err.number = 0 then
                 if not rs.EOF then
-                   do while not rs.EOF                              
+                    do while not rs.EOF                              
                         state_id = rs("state_id")
-                        state = rs("state")
+                        state_name = rs("state_name")
                         
-                        json_a = json_a & "{" & """name""" & ":""" & state & """, " & """id""" & ":""" & state_id & """},"
+                        json_a = json_a & "{" & """name""" & ":""" & state_name & """, " & """id""" & ":""" & state_id & """},"
                         rs.MoveNext
-                   loop
-                   set rs = Nothing
+                    loop
+                    set rs = Nothing
 
-                   json = "{" & """data""" & ":[" & json_a & "]}"
-                   json = Replace(json, "},]}", "}]}")
-                   Response.Charset = "ISO-8859-1"
-                   Response.ContentType = "application/json"
-                   Response.write(json)
-                   Response.end
-
+                    json = "{" & """data""" & ":[" & json_a & "]}"
+                    json = Replace(json, "},]}", "}]}")
+                    Response.Charset = "ISO-8859-1"
+                    Response.ContentType = "application/json"
+                    Response.write(json)
+                    Response.end
                 else
                     Response.ContentType = "application/json"
                     Response.write("{" & """data""" & ":[]}")
                     Response.end
-
-
-                end if
-              
+                end if              
             end if            
             set rs = Nothing    
 
@@ -61,5 +56,4 @@ select case action
 end select
 objConn.close()
 Set objConn = Nothing
-
 %>

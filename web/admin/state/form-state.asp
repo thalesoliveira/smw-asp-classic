@@ -8,9 +8,9 @@ action = request.Form("action")
 
 actionCreate = false
 
-state = request.Form("state")
-initials = request.Form("initials")
-countryId = request.Form("country_id")
+state_name = request.Form("state_name")
+state_initials = request.Form("state_initials")
+country_id = request.Form("country_id")
 
 sub redirect(action)
     session("action") = action
@@ -30,22 +30,22 @@ End function
 dim msg_v
 select case action 
     case "save"        
-        msg_v = validadeFields("State",state)
-        msg_v = validadeFields("Initials",initials)
+        msg_v = validadeFields("State",state_name)
+        msg_v = validadeFields("Initials",state_initials)
                
         if isempty(msg_v) then        
-            sql = "UPDATE t_state set state = '" & state & "', initials = '" & initials & "', country_id = '" & countryId & "' WHERE state_id = " & id	           
+            sql = "UPDATE t_state set state_name = '" & state_name & "', state_initials = '" & state_initials & "', country_id = '" & country_id & "' WHERE state_id = " & id	           
             objConn.Execute(sql)
             call redirect("edit")
             response.end
         end if
 
     case "create"
-        msg_v = validadeFields("State",state)
-        msg_v = validadeFields("Initials",initials)
+        msg_v = validadeFields("State",state_name)
+        msg_v = validadeFields("Initials",state_initials)
 
         if isempty(msg_v) then        
-            sql = "INSERT INTO t_state (state, initials, country_id) VALUES ('" & state & "','" & initials & "'," & countryId & ")"
+            sql = "INSERT INTO t_state (state_name, state_initials, country_id) VALUES ('" & state_name & "','" & state_initials & "'," & country_id & ")"
             objConn.Execute(sql)
             call redirect("create")
             response.end
@@ -65,9 +65,9 @@ select case action
             Set rs = objConn.Execute(sql)
 
             if not rs.EOF then
-                state = rs("state")
-                initials = rs("initials")
-                Idcountry = rs("country_id")
+                state_name = rs("state_name")
+                state_initials = rs("state_initials")
+                id_country = rs("country_id")
             end if
             set rs = Nothing    
         end if
@@ -95,24 +95,24 @@ end select
                 <input type="hidden" name="id" value="<%=id%>">
                 <div class="form-group">
                     <label for="state">State</label>
-                    <input type="text" class="form-control" id="state" name="state" value="<%=state%>" required>
+                    <input type="text" class="form-control" id="state_name" name="state_name" value="<%=state_name%>" required>
                 </div>
                 <div class="form-group">
                     <label for="state">Initials</label>
-                    <input type="text" class="form-control" id="initials" maxlength="5" name="initials" value="<%=initials%>" required>
+                    <input type="text" class="form-control" id="state_initials" maxlength="5" name="state_initials" value="<%=state_initials%>" required>
                 </div>                
                 <div class="form-group">
                     <label for="country">Country</label>
                     <select class="form-control" id="country_id" name="country_id">
                         <%
-                            sql = "SELECT country_id, country FROM t_country WHERE active = 1"
+                            sql = "SELECT country_id, country_name FROM t_country WHERE country_active = 1"
                             Set rs = objConn.Execute(sql)
 
                             do while not rs.EOF                              
-                                countryId = rs("country_id")
-                                country = rs("country")
+                                country_id = rs("country_id")
+                                country_name = rs("country_name")
                         %>
-                        <option value="<%=countryId%>" <%if Idcountry = countryId then%> selected="selected" <%end if%>><%=country%></option>
+                        <option value="<%=country_id%>" <%if id_country = country_id then%> selected="selected" <%end if%>><%=country_name%></option>
                         <%
                                 rs.MoveNext
                             loop

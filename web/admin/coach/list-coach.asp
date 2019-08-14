@@ -43,42 +43,43 @@ action = session("action")
             </div>
           
             <div class="table-responsive">     
-                <table class="table table-hover table-striped" id="tb-country" style="width:100%">
+                <table class="table table-hover table-striped" id="tb-coach" style="width:100%">
                     <thead>
                         <tr>
                             <th scope="col">Name</th>                            
                             <th scope="col">Nacionality</th>
-                            <th style="width: 12%" class="text-center">Action</th>
+                            <th style="width: 15%" class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                     <%
-                    sql = "SELECT * FROM t_coach;"
+                    sql = "SELECT coach_id, coach_name, coach_nacionality_id FROM t_coach;"
                     Set rs = objConn.Execute(sql)
                     
-                    do while not rs.EOF
-                        coach = rs("coach")                        
-                        id = rs("coach_id")
-                        nacionality_id = rs("nacionality_id")
+                    do while not rs.EOF                        
+                        coach_id        = rs("coach_id")
+                        coach_name      = rs("coach_name")
+                        coach_nacionality_id  = rs("coach_nacionality_id")
 
                         flag = ""
-                        Set rs1 = objConn.Execute("SELECT country, initials_alfa_2  FROM t_country WHERE country_id = " & nacionality_id)                 
+                        Set rs1 = objConn.Execute("SELECT country_name, country_initials_alfa_2  FROM t_country WHERE country_id = " & coach_nacionality_id)
                         if not rs1.EOF then 
-                            country = rs1("country")
-                            initials = rs1("initials_alfa_2")                            
-                            flag_initials = LCase(initials)
+                            country_name        = rs1("country_name")
+                            country_initials    = rs1("country_initials_alfa_2")                            
+                            flag_initials = LCase(country_initials)
                             if flag_initials <> "" Then
                                 flag = "<span class='flag-icon " & "flag-icon-" & flag_initials & "'" & "></span>"
                             end if
                         end if
                         %>
                         <tr>
-                            <td><%=coach%></td>
-                            <td><%=flag & vbcrlf & country%></td>                                                   
+                            <td><%=coach_name%></td>
+                            <td><%=flag & vbcrlf & country_name%></td>
                             <td>
-                                <a href="form-coach.asp?id=<%=id%>" class="btn btn-default" alt="Edit" title="Edit"><i class="fas fa-edit"></i></a>                                                       
-                                <a href="#" class="btn btn-default" data-id="<%=id%>" data-toggle="modal" data-target="#remove-state-modal"><i class="fas fa-trash"></i></a>
-                            </td>
+                                <a href="form-coach.asp?id=<%=coach_id%>" class="btn btn-default" alt="Edit" title="Edit"><i class="fas fa-edit"></i></a>                                                       
+                                <a href="#" class="btn btn-default" data-id="<%=coach_id%>" data-toggle="modal" data-target="#remove-coach-modal"><i class="fas fa-trash"></i></a>
+                                <a href="#" class="btn btn-default info" data-id="<%=coach_id%>" data-toggle="modal" data-target="#info-coach-modal"><i class="fas fa-info-circle"></i></a>
+                            </td>                            
                         </tr>
                     <%
                         rs.MoveNext 
@@ -91,11 +92,11 @@ action = session("action")
         </div>
 
         <!-- Modal -->
-        <div class="modal fade" id="remove-state-modal" tabindex="-1" role="dialog" aria-labelledby="remove-state-modal" aria-hidden="true">
+        <div class="modal fade" id="remove-coach-modal" tabindex="-1" role="dialog" aria-labelledby="remove-coach-modal" aria-hidden="true">
             <div class="modal-dialog modal-sm" role="dialog">
                 <div class="modal-content panel-warning">
                     <div class="modal-header panel-heading">
-                        <h5 class="modal-title" id="remove-state-modal">Remove Coach ?</h5>
+                        <h5 class="modal-title" id="remove-coach-modal">Remove Coach ?</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -107,12 +108,27 @@ action = session("action")
                 </div>
             </div>
         </div>
-
+        <div id="dataModal" class="modal fade">  
+            <div class="modal-dialog " role="dialog">
+                <div class="modal-content panel-info">
+                    <div class="modal-header panel-heading">
+                        <h4 class="modal-title">Info Coach</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>                        
+                    </div>
+                    <div class="modal-body" id="info-coach"></div>  
+                    <div class="modal-footer">  
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>  
+                    </div>
+                </div>
+            </div>
+        </div>
         <script type="text/javascript">
             $(document).ready(function() {
                 var id;
 
-                $('#remove-state-modal').on('show.bs.modal', function (e) {
+                $('#remove-coach-modal').on('show.bs.modal', function (e) {
                     var dataId = $(e.relatedTarget).data('id');  
                     if (typeof dataId !== 'undefined') {
                        id = dataId;
@@ -136,7 +152,7 @@ action = session("action")
                                 
                 $('.toast').toast('show');
 
-                $('#tb-country').DataTable({
+                $('#tb-coach').DataTable({
                     "language": {
                         "lengthMenu": "Display _MENU_ records per page",
                         "zeroRecords": "Nothing found - sorry",
@@ -145,6 +161,20 @@ action = session("action")
                         "infoFiltered": "(filtered from _MAX_ total records)"
                     }
                 });
+
+                $(".info").click(function() {
+                    var coach_id = $(this).attr("data-id");                    
+                    $.ajax({  
+                        url:"info-coach.asp",  
+                        method:"post",  
+                        data:{coach_id:coach_id},  
+                        success:function(data) {  
+                            $('#info-coach').html(data);  
+                            $('#dataModal').modal("show");  
+                        }  
+                    });  
+                }); 
+
             });
         </script>
     </body>
