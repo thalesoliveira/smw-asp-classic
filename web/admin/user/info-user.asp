@@ -2,6 +2,7 @@
 <!--#include virtual="/web/src/verifiedLogin.asp"-->
 <%
 response.expires = 0
+response.Charset="ISO-8859-1"
 call verifiedLogin()
 user_id = request("user_id")
 
@@ -24,7 +25,7 @@ if not isempty(user_id) then
         state_name              = rs("state_name")
     %>
          
-    <div class="form-group">
+    <div>
         <span class="font-weight-bold">Fist Name: </span><%=user_first_name%><br/>
         <span class="font-weight-bold">Last Name: </span><%=user_last_name%><br/>
         <span class="font-weight-bold">Mail/Login: </span><%=user_login%><br/>

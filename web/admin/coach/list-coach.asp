@@ -108,6 +108,7 @@ action = session("action")
                 </div>
             </div>
         </div>
+
         <div id="dataModal" class="modal fade">  
             <div class="modal-dialog " role="dialog">
                 <div class="modal-content panel-info">
@@ -124,6 +125,7 @@ action = session("action")
                 </div>
             </div>
         </div>
+        
         <script type="text/javascript">
             $(document).ready(function() {
                 var id;

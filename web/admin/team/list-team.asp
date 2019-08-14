@@ -46,37 +46,34 @@ action = session("action")
                 <table class="table table-hover table-striped" id="tb-team" style="width:100%">
                     <thead>
                         <tr>
-                            <th scope="col">Name</th>                            
-                            <th style="width: 12%" class="text-center">Action</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Country</th>                            
+                            <th style="width: 15%" class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                     <%
-                    sql = "SELECT * FROM t_team;"
+                    sql = "SELECT t_team.*, t_country.country_name, t_country.country_initials_alfa_2 FROM t_team LEFT JOIN t_country ON t_country.country_id = t_team.country_id;"
                     Set rs = objConn.Execute(sql)
                     
                     do while not rs.EOF
-                        name = rs("name")                        
-                        id = rs("team_id")
-                        country_id = rs("country_id")
+                        team_id     = rs("team_id")
+                        team_name   = rs("team_name")                        
+                        country_id  = rs("country_id")
+                        country_name = rs("country_name")
+                        country_initials = rs("country_initials_alfa_2")                  
 
                         flag = ""
-                        Set rs1 = objConn.Execute("SELECT country, initials_alfa_2  FROM t_country WHERE country_id = " & country_id)
-                        if not rs1.EOF then 
-                            country = rs1("country")
-                            initials = rs1("initials_alfa_2")                            
-                            flag_initials = LCase(initials)
-                            if flag_initials <> "" Then
-                                flag = "<span class='flag-icon " & "flag-icon-" & flag_initials & "'" & "></span>"
-                            end if
-                        end if
+                        flag_initials = LCase(country_initials)
+                        if flag_initials <> "" Then flag = "<span class='flag-icon " & "flag-icon-" & flag_initials & "'" & "></span>"
                         %>
                         <tr>
-                            <td><%=name%></td>
-                            <td><%=flag & vbcrlf & country%></td>                                                   
+                            <td><%=team_name%></td>
+                            <td><%=flag & vbcrlf & country_name%></td>                                                   
                             <td>
-                                <a href="form-team.asp?id=<%=id%>" class="btn btn-default" alt="Edit" title="Edit"><i class="fas fa-edit"></i></a>                                                       
-                                <a href="#" class="btn btn-default" data-id="<%=id%>" data-toggle="modal" data-target="#remove-team-modal"><i class="fas fa-trash"></i></a>
+                                <a href="form-team.asp?id=<%=team_id%>" class="btn btn-default" alt="Edit" title="Edit"><i class="fas fa-edit"></i></a>                                                       
+                                <a href="#" class="btn btn-default" data-id="<%=team_id%>" data-toggle="modal" data-target="#remove-team-modal"><i class="fas fa-trash"></i></a>
+                                <a href="#" class="btn btn-default info" data-id="<%=team_id%>" data-toggle="modal" data-target="#info-team-modal"><i class="fas fa-info-circle"></i></a>
                             </td>
                         </tr>
                     <%
@@ -102,6 +99,23 @@ action = session("action")
                     <div class="modal-footer">        
                         <button type="button" id="btn-confirm-remove" class="btn btn-danger">Remove</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dataModal" class="modal fade">  
+            <div class="modal-dialog " role="dialog">
+                <div class="modal-content panel-info">
+                    <div class="modal-header panel-heading">
+                        <h4 class="modal-title">Info Team</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>                        
+                    </div>
+                    <div class="modal-body" id="info-team"></div>  
+                    <div class="modal-footer">  
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>  
                     </div>
                 </div>
             </div>
@@ -135,7 +149,7 @@ action = session("action")
                                 
                 $('.toast').toast('show');
 
-                $('#tb-country').DataTable({
+                $('#tb-team').DataTable({
                     "language": {
                         "lengthMenu": "Display _MENU_ records per page",
                         "zeroRecords": "Nothing found - sorry",
@@ -144,6 +158,21 @@ action = session("action")
                         "infoFiltered": "(filtered from _MAX_ total records)"
                     }
                 });
+
+                $(".info").click(function() {
+                    var team_id = $(this).attr("data-id");                    
+                    $.ajax({  
+                        url:"info-team.asp",  
+                        method:"post",  
+                        data:{team_id:team_id},  
+                        success:function(data) {  
+                            $('#info-team').html(data);  
+                            $('#dataModal').modal("show");  
+                        }  
+                    });  
+                }); 
+
+
             });
         </script>
     </body>
