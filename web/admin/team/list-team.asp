@@ -54,13 +54,13 @@ action = session("action")
                     <tbody>
                     <%
                     sql = "SELECT t_team.*, t_country.country_name, t_country.country_initials_alfa_2 FROM t_team LEFT JOIN t_country ON t_country.country_id = t_team.country_id;"
-                    Set rs = objConn.Execute(sql)
+                    Set rs = objConn.Execute(cstr(sql))
                     
                     do while not rs.EOF
-                        team_id     = rs("team_id")
-                        team_name   = rs("team_name")                        
-                        country_id  = rs("country_id")
-                        country_name = rs("country_name")
+                        team_id         = rs("team_id")
+                        team_name       = rs("team_name")                        
+                        country_id      = rs("country_id")
+                        country_name    = rs("country_name")
                         country_initials = rs("country_initials_alfa_2")                  
 
                         flag = ""
@@ -79,7 +79,10 @@ action = session("action")
                     <%
                         rs.MoveNext 
                     loop
-                    set rs = Nothing
+
+                    objConn.close            
+                    set rs = Nothing            
+                    set objConn = Nothing                   
                     %>
                     </tbody>
                 </table>

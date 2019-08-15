@@ -21,7 +21,7 @@ If session("user_id") = "" Then
 
             If message = "" Then
                 sql = "SELECT * FROM t_user WHERE user_login ='" & user_login & "'"
-                Set rs = objConn.Execute(sql)
+                Set rs = objConn.Execute(cstr(sql))
             
                 If rs.EOF Then
                     login = false
@@ -32,7 +32,7 @@ If session("user_id") = "" Then
 
                 If login Then
                     sql = "SELECT user_id FROM t_user WHERE user_login ='" & user_login & "' AND user_password = '" & user_password & "'"
-                    Set rs = objConn.Execute(sql)    
+                    Set rs = objConn.Execute(cstr(sql))
                     
                     If rs.EOF Then
                         message = " user not found! <br/>"

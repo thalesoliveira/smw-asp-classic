@@ -35,7 +35,7 @@ select case action
                
         if isempty(msg_v) then        
             sql = "UPDATE t_state set state_name = '" & state_name & "', state_initials = '" & state_initials & "', country_id = '" & country_id & "' WHERE state_id = " & id	           
-            objConn.Execute(sql)
+            objConn.Execute(cstr(sql))
             call redirect("edit")
             response.end
         end if
@@ -46,7 +46,7 @@ select case action
 
         if isempty(msg_v) then        
             sql = "INSERT INTO t_state (state_name, state_initials, country_id) VALUES ('" & state_name & "','" & state_initials & "'," & country_id & ")"
-            objConn.Execute(sql)
+            objConn.Execute(cstr(sql))
             call redirect("create")
             response.end
         end if
@@ -54,7 +54,7 @@ select case action
     case "delete"
         if isempty(id) then        
             sql = "DELETE t_state WHERE state_id = " & id
-            objConn.Execute(sql)
+            objConn.Execute(cstr(sql))
             response.write("ok")
             response.end            
         end if
@@ -62,7 +62,7 @@ select case action
         if ((trim(id) <> "" and not isnull(id)) and isnumeric(id)) then
             actionCreate = true
             sql = "SELECT * FROM t_state WHERE state_id = " & id
-            Set rs = objConn.Execute(sql)
+            Set rs = objConn.Execute(cstr(sql))
 
             if not rs.EOF then
                 state_name = rs("state_name")
@@ -93,20 +93,20 @@ end select
         <h1>Register State</h1>
             <form method="POST">
                 <input type="hidden" name="id" value="<%=id%>">
-                <div class="form-group">
-                    <label for="state">State</label>
+                <div class="form-group required">
+                    <label class="control-label" for="state_name">State</label>
                     <input type="text" class="form-control" id="state_name" name="state_name" value="<%=state_name%>" required>
                 </div>
-                <div class="form-group">
-                    <label for="state">Initials</label>
+                <div class="form-group required">
+                    <label class="control-label" for="state_initials">Initials</label>
                     <input type="text" class="form-control" id="state_initials" maxlength="5" name="state_initials" value="<%=state_initials%>" required>
                 </div>                
                 <div class="form-group">
-                    <label for="country">Country</label>
+                    <label class="control-label" for="country">Country</label>
                     <select class="form-control" id="country_id" name="country_id">
                         <%
                             sql = "SELECT country_id, country_name FROM t_country WHERE country_active = 1"
-                            Set rs = objConn.Execute(sql)
+                            Set rs = objConn.Execute(cstr(sql))
 
                             do while not rs.EOF                              
                                 country_id = rs("country_id")

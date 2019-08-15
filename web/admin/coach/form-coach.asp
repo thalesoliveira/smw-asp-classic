@@ -39,7 +39,7 @@ select case action
 
         if isempty(msg_v) then        
             sql = "UPDATE t_coach SET coach_name='" & coach_name & "', coach_description='" & coach_description & "', coach_nacionality_id= '" & id_country & "',coach_born_date ='" & coach_born_date & "'" & " WHERE coach_id = " & id                   
-            objConn.Execute(sql)
+            objConn.Execute(cstr(sql))
 
             call redirect("edit")
             response.end
@@ -53,7 +53,7 @@ select case action
         
         if isempty(msg_v) then        
             sql = "INSERT INTO  t_coach (coach_name, coach_description, coach_nacionality_id, coach_born_date) VALUES ('" & coach_name & "','" & coach_description & "'," & id_country & ",'" & coach_born_date & "')"
-            objConn.Execute(sql)
+            objConn.Execute(cstr(sql))
             call redirect("create")
             response.end
         end if
@@ -70,7 +70,7 @@ select case action
         if ((trim(id) <> "" and not isnull(id)) and isnumeric(id)) then
             actionCreate = true
             sql = "SELECT * FROM t_coach WHERE coach_id = " & id
-            Set rs = objConn.Execute(sql)
+            Set rs = objConn.Execute(cstr(sql))
             if not rs.EOF then                
                 coach_name          = rs("coach_name")
                 coach_description   = rs("coach_description")                
@@ -102,8 +102,8 @@ end select
             <form method="POST">
                 <input type="hidden" name="id" value="<%=id%>">
                 <input type="hidden" name="Idstate" id="Idstate" value="<%=Idstate%>">
-                <div class="form-group">
-                    <label for="coach_name">Name</label>
+                <div class="form-group required">
+                    <label class="control-label" for="coach_name">Name</label>
                     <input type="text" class="form-control" id="coach_name" name="coach_name" value="<%=coach_name%>" required>
                 </div>
 
@@ -112,13 +112,13 @@ end select
                     <textarea class="form-control" id="coach_description" name="coach_description" rows="3"><%=coach_description%></textarea>
                 </div>                
                 
-                <div class="form-group">
-                    <label for="country">Nacionality</label>
+                <div class="form-group required">
+                    <label class="control-label" for="country">Nacionality</label>
                     <select class="form-control" id="country_id" name="country_id" required>
                         <option value=""></option>
                         <%
                             sql = "SELECT country_id, country_name FROM t_country WHERE country_active = 1"
-                            Set rs = objConn.Execute(sql)
+                            Set rs = objConn.Execute(cstr(sql))
 
                             do while not rs.EOF
                                 country_id      = rs("country_id")

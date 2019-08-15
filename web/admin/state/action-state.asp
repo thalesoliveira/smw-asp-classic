@@ -20,7 +20,7 @@ select case action
     case "search"               
         if not isempty(id) then
             sql = "SELECT state_id, state_name FROM t_state WHERE country_id = " & id            
-            Set rs = objConn.Execute(sql)
+            Set rs = objConn.Execute(cstr(sql))
 
             if err.number = 0 then
                 if not rs.EOF then

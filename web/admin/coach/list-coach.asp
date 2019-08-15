@@ -54,7 +54,7 @@ action = session("action")
                     <tbody>
                     <%
                     sql = "SELECT coach_id, coach_name, coach_nacionality_id FROM t_coach;"
-                    Set rs = objConn.Execute(sql)
+                    Set rs = objConn.Execute(cstr(sql))
                     
                     do while not rs.EOF                        
                         coach_id        = rs("coach_id")

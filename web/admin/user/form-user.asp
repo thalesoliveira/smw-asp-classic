@@ -74,7 +74,7 @@ select case action
         if isempty(msg_v) then        
             sql = "INSERT INTO t_user (user_first_name, user_last_name, type_user_id, country_id, state_id, user_login, user_password) VALUES ('" & user_first_name & "','" & user_last_name & "'," & user_id_type & "," & id_country & "," & id_state & ",'" & user_login & "','" & user_password & "')"
            
-            objConn.Execute(sql)
+            objConn.Execute(cstr(sql))
             call redirect("create")
             response.end
         end if
@@ -84,15 +84,15 @@ select case action
 
             sql = "DELETE t_user WHERE user_id = " & id
 
-            objConn.Execute(sql)
+            objConn.Execute(cstr(sql))
             response.write("ok")
-            response.end            
+            response.end
         end if
     case else
         if ((trim(id) <> "" and not isnull(id)) and isnumeric(id)) then
             actionCreate = true
             sql = "SELECT * FROM t_user WHERE user_id = " & id
-            Set rs = objConn.Execute(sql)
+            Set rs = objConn.Execute(cstr(sql))
             if not rs.EOF then                
                 user_first_name = rs("user_first_name")
                 user_last_name  = rs("user_last_name")                
@@ -127,16 +127,16 @@ end select
             <form method="POST">
                 <input type="hidden" name="id" value="<%=id%>">
                 <input type="hidden" name="id_state" id="id_state" value="<%=id_state%>">
-                <div class="form-group">
-                    <label for="fist_name">Fist Name</label>
+                <div class="form-group required">
+                    <label class="control-label" for="fist_name">Fist Name</label>
                     <input type="text" class="form-control" id="user_first_name" name="user_first_name" value="<%=user_first_name%>" required>
                 </div>                
-                <div class="form-group">
-                    <label for="last_name">Last Name</label>
+                <div class="form-group required">
+                    <label class="control-label" for="last_name">Last Name</label>
                     <input type="text" class="form-control" id="user_last_name" maxlength="5" name="user_last_name" value="<%=user_last_name%>" required>
                 </div>                
-                <div class="form-group">
-                    <label for="mailo">Mail/Login</label>
+                <div class="form-group required">
+                    <label class="control-label" for="mailo">Mail/Login</label>
                     <input type="email" class="form-control" id="user_login" maxlength="20" name="user_login" value="<%=user_login%>" required>
                 </div>
 
@@ -145,7 +145,7 @@ end select
                     <select class="form-control" id="user_type_id" name="user_type_id">
                         <%
                             sql = "SELECT * FROM t_type_user WHERE type_user_active = 1"
-                            Set rs = objConn.Execute(sql)
+                            Set rs = objConn.Execute(cstr(sql))
 
                             do while not rs.EOF
                                 type_user_id = rs("type_user_id")
@@ -165,7 +165,7 @@ end select
                         <option value=""></option>
                         <%
                             sql = "SELECT country_id, country_name FROM t_country WHERE country_active = 1"
-                            Set rs = objConn.Execute(sql)
+                            Set rs = objConn.Execute(cstr(sql))
 
                             do while not rs.EOF
                                 country_id = rs("country_id")
@@ -184,8 +184,8 @@ end select
                     <span class="spinner-border spinner-border-sm" role="status" style="display: none;"></span>
                     <select class="form-control" id="state_id" name="state_id" style="display: none;"></select>
                 </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
+                <div class="form-group required">
+                    <label class="control-label" for="password">Password</label>
                     <input type="password" class="form-control" id="user_password" maxlength="10" name="user_password" value="" <% if id <> "" then response.write("required")%> >
                 </div>
                 

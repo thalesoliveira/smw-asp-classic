@@ -27,7 +27,7 @@ call verifiedLogin()
                 <tbody>
                 <%
                 sql = "SELECT country_id, country_name, country_initials_alfa_2, country_active FROM t_country;"
-                Set rs = objConn.Execute(sql)
+                Set rs = objConn.Execute(cstr(sql))
                 do while not rs.EOF
 
                 country_id = rs("country_id")
@@ -80,7 +80,8 @@ call verifiedLogin()
                     }
                 });
 
-                $('#tb-country').DataTable( {
+                $('#tb-country').DataTable({
+                    stateSave: true,
                     "language": {
                     "lengthMenu": "Display _MENU_ records per page",
                     "zeroRecords": "Nothing found - sorry",

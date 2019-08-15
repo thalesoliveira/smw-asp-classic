@@ -7,8 +7,8 @@ call verifiedLogin()
 coach_id = request("coach_id")
 
 if not isempty(coach_id) then
-    sql = "SELECT t_coach.* , t_country.country_name FROM t_coach LEFT JOIN t_country ON t_country.country_id = t_coach.coach_nacionality_id WHERE coach_id = " & coach_id
-    Set rs = objConn.Execute(sql)           
+    sql = "SELECT tc.* , tco.country_name FROM t_coach tc LEFT JOIN t_country tco ON tco.country_id = tc.coach_nacionality_id WHERE coach_id = " & coach_id
+    Set rs = objConn.Execute(cstr(sql))           
     
     if not rs.EOF then
         coach_name          = rs("coach_name")

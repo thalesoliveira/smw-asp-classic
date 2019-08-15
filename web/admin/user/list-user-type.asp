@@ -96,9 +96,7 @@ end function
                         rs.MoveNext 
                     loop
                     set rs = Nothing
-                    %>
-
-                    
+                    %>                    
                     </tbody>
                 </table>                
             </div>

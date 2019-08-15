@@ -33,7 +33,7 @@ select case action
     
         if isempty(msg_v) then  
            sql = "UPDATE t_type_user SET type_user_description = '" & type_user_description & "', type_user_active = " & type_user_active & " WHERE type_user_id = " & id
-            objConn.Execute(sql)
+            objConn.Execute(cstr(sql))
            
             call redirect("edit")
             response.end
@@ -46,7 +46,7 @@ select case action
                 
         if isempty(msg_v) then        
             sql = "INSERT INTO t_type_user (type_user_description, type_user_active) VALUES ('" & type_user_description & "'," & type_user_active & ")"
-            objConn.Execute(sql)
+            objConn.Execute(cstr(sql))
             call redirect("create")
             response.end
         end if
@@ -54,19 +54,19 @@ select case action
     case "delete"
         if not isempty(id) then
             sql = "DELETE t_type_user WHERE type_user_id = " & id
-            objConn.Execute(sql)
+            objConn.Execute(cstr(sql))
             response.write("ok")
-            response.end            
+            response.end
         end if
     case else
         if ((trim(id) <> "" and not isnull(id)) and isnumeric(id)) then
 
             actionCreate = true
             sql = "SELECT * FROM t_type_user WHERE type_user_id = " & id
-            Set rs = objConn.Execute(sql)
+            Set rs = objConn.Execute(cstr(sql))
             if not rs.EOF then
-                type_user_description = rs("type_user_description")    
-                type_user_active = rs("type_user_active")
+                type_user_description   = rs("type_user_description")    
+                type_user_active        = rs("type_user_active")
             end if
             set rs = Nothing    
         end if
@@ -92,12 +92,12 @@ end select
         <h1>Register User Type</h1>
             <form method="POST">
                 <input type="hidden" name="id" value="<%=id%>">
-                <div class="form-group">
-                    <label for="state">DESCRIPTION</label>
+                <div class="form-group required">
+                    <label class="control-label" for="description">DESCRIPTION</label>
                     <input type="text" class="form-control" id="type_user_description" name="type_user_description" value="<%=type_user_description%>" required>
                 </div>                
                 <div class="form-group">
-                    <label for="state">ACTIVE</label>
+                    <label for="active">ACTIVE</label>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="type_user_active" value="1" <% if type_user_active = 1 then %>checked<% end if%>>
                         <label class="form-check-label" for="yes">YES</label>                       

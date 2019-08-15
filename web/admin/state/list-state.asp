@@ -56,15 +56,15 @@ action = session("action")
                     <%
                     sql = "SELECT tc.country_name, tc.country_initials_alfa_2, ts.state_name, ts.state_initials,  ts.state_id FROM t_state ts" &_
                            " INNER JOIN t_country tc ON tc.country_id = ts.country_id  ;"
-                    Set rs = objConn.Execute(sql)                    
+                    Set rs = objConn.Execute(cstr(sql))                    
                     
                     do while not rs.EOF
                         country_name = rs("country_name")
                         country_initials = rs("country_initials_alfa_2")
                 
-                        state_id =  rs("state_id")
-                        state_name = rs("state_name")
-                        state_initials = rs("state_initials")                               
+                        state_id        =  rs("state_id")
+                        state_name      = rs("state_name")
+                        state_initials  = rs("state_initials")                               
                 
                         flag = ""
                         flag_initials = LCase(country_initials)

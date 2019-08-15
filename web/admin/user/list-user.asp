@@ -55,11 +55,11 @@ action = session("action")
                     <tbody>
                     <%
                     sql = "SELECT t_user.user_id, user_first_name, type_user_description FROM t_user INNER JOIN t_type_user ON t_type_user.type_user_id = t_user.user_id ;"
-                    Set rs = objConn.Execute(sql)                    
+                    Set rs = objConn.Execute(cstr(sql))                    
                     
                     do while not rs.EOF
                         user_first_name = rs("user_first_name")
-                        user_id = rs("user_id")
+                        user_id         = rs("user_id")
                         type_user_description = lcase(rs("type_user_description"))
                         %>
                         <tr>

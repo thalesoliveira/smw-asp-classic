@@ -29,11 +29,11 @@ phone_id        = request.Form("phone_id")
 phone_ddi       = request.Form("phone_ddi")
 phone_number    = request.Form("phone_number")
 
-dim myRegExp, ResultString
-set myRegExp = New RegExp
-myRegExp.Global = True
-myRegExp.Pattern = "[^\d]"
-phone_number = myRegExp.Replace(phone_number, "")
+dim reg_exp
+set reg_exp = New RegExp
+reg_exp.Global = True
+reg_exp.Pattern = "[^\d]"
+phone_number = reg_exp.Replace(phone_number, "")
 
 sub redirect(action)
     session("action") = action
@@ -59,7 +59,10 @@ select case action
         msg_v = validadeFields("Coach",coach_id)
         msg_v = validadeFields("Founded",team_founded_year)
 
-        if isempty(msg_v) then        
+        if isempty(msg_v) then    
+
+            objConn.BeginTrans
+
             sql = "UPDATE t_team SET team_name='" & team_name & "', team_description='" & team_description & "', country_id = " & id_country & ", coach_id =" & id_coach & ",team_founded_year ='" & team_founded_year & "'" & " WHERE team_id = " & id
             objConn.Execute(sql)
 
@@ -72,6 +75,15 @@ select case action
             if contact_id then
                 sql = "UPDATE t_contact SET contact_email='" & contact_email & "', contact_website='" & contact_website & "' WHERE contact_id = " & contact_id
                 objConn.Execute(sql)
+            end if
+
+
+            if Err <> 0 then
+                objConn.RollbackTrans
+                response.write Err.Description
+                response.end
+            else
+                 objConn.CommitTrans
             end if
 
             call redirect("edit")
@@ -88,6 +100,8 @@ select case action
         
         if isempty(msg_v) then
             
+            objConn.BeginTrans
+
             sql = "INSERT INTO t_team (team_name, team_description, country_id, coach_id, team_founded_year) VALUES ('" & team_name & "','" & team_description & "'," & id_country & "," & id_coach & ",'" & team_founded_year & "')"
             objConn.Execute(sql)
 
@@ -145,6 +159,14 @@ select case action
                 objConn.Execute(sql)
 
             end if
+
+            if Err <> 0 then
+                objConn.RollbackTrans
+                response.write Err.Description
+                response.end
+            else
+                 objConn.CommitTrans
+            end if
             
             call redirect("create")
             response.end
@@ -154,19 +176,31 @@ select case action
         if not isempty(id) then        
             
             sql = "SELECT address_id, contact_id, phone_id FROM t_team LEFT JOIN t_phone_team ON t_phone_team.team_id = t_team.team_id WHERE t_team.team_id= " & id
-            Set rs = objConn.Execute(sql)
+            Set rs = objConn.Execute(cstr(sql))
             if not rs.EOF then
 
-                address_id = rs("address_id")
-                contact_id =rs("contact_id")
-                phone_id =rs("phone_id")
-                
-                objConn.Execute("DELETE t_team WHERE team_id  = " & id)
-                objConn.Execute("DELETE t_address WHERE address_id = " & address_id)
-                objConn.Execute("DELETE t_contact WHERE contact_id = " & contact_id)
+                address_id  = rs("address_id")
+                contact_id  = rs("contact_id")
+                phone_id    = rs("phone_id")
 
-                objConn.Execute("DELETE t_phone_team WHERE team_id = " & id)
-                objConn.Execute("DELETE t_phone WHERE phone_id = " & phone_id)
+                objConn.BeginTrans
+
+                objConn.Execute("DELETE t_team WHERE team_id  = " & id)
+
+                if address_id <> "" then objConn.Execute("DELETE t_address WHERE address_id = " & address_id)
+                if contact_id <> "" then objConn.Execute("DELETE t_contact WHERE contact_id = " & contact_id)
+                if phone_id <> "" then 
+                    objConn.Execute("DELETE t_phone_team WHERE team_id = " & id)
+                    objConn.Execute("DELETE t_phone WHERE phone_id = " & phone_id)
+                end if
+
+                if Err <> 0 then
+                    objConn.RollbackTrans
+                    response.write Err.Description
+                    response.end
+                else
+                    objConn.CommitTrans
+                end if
 
             end if            
 
@@ -176,7 +210,7 @@ select case action
     case else
         if ((trim(id) <> "" and not isnull(id)) and isnumeric(id)) then
             actionCreate = true
-            sql = "SELECT * FROM t_team WHERE team_id = " & id
+            sql = "SELECT * FROM t_team tt LEFT JOIN t_phone_team tpt ON tpt.team_id = tt.team_id WHERE tt.team_id = " & id
             Set rs = objConn.Execute(sql)
             if not rs.EOF then                
                 team_name           = rs("team_name")
@@ -190,7 +224,7 @@ select case action
 
                 if address_id <> "" then
                     sql = "SELECT * FROM t_address WHERE address_id = " & address_id
-                    Set rs = objConn.Execute(sql)
+                    Set rs = objConn.Execute(cstr(sql))
                     if not rs.EOF then                        
                         address_name        = rs("address_name")
                         address_city        = rs("address_city")
@@ -201,7 +235,7 @@ select case action
 
                 if contact_id <> "" then
                     sql = "SELECT * FROM t_contact WHERE contact_id = " & contact_id
-                    Set rs = objConn.Execute(sql)
+                    Set rs = objConn.Execute(cstr(sql))
                     if not rs.EOF then                        
                         contact_email        = rs("contact_email")
                         contact_website      = rs("contact_website")
@@ -210,15 +244,15 @@ select case action
 
                 if phone_id <> "" then
                     sql = "SELECT * FROM t_phone WHERE phone_id = " & phone_id
-                    Set rs = objConn.Execute(sql)
+                    Set rs = objConn.Execute(cstr(sql))
                     if not rs.EOF then                        
                         phone_ddi       = rs("phone_ddi")
                         phone_number    = rs("phone_number")
                     end if
                 end if
-
-            end if
-            set rs = Nothing    
+                
+            end if                    
+            set rs = Nothing            
         end if
 end select
 %>
@@ -267,7 +301,7 @@ end select
                         <option value=""></option>
                         <%
                             sql = "SELECT coach_id, coach_name FROM t_coach"
-                            Set rs = objConn.Execute(sql)
+                            Set rs = objConn.Execute(cstr(sql))
 
                             do while not rs.EOF        
                                 coach_id    = rs("coach_id")
@@ -308,7 +342,7 @@ end select
                         <option value=""></option>
                         <%
                             sql = "SELECT country_id, country_name FROM t_country WHERE country_active = 1"
-                            Set rs = objConn.Execute(sql)
+                            Set rs = objConn.Execute(cstr(sql))
 
                             do while not rs.EOF                              
                                 country_id      = rs("country_id")
