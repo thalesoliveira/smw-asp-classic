@@ -1,5 +1,4 @@
-<!--#include virtual="/config/conexao.asp"-->
-<!--#include virtual="/web/src/verifiedLogin.asp"-->
+<!--#include virtual="/config/bootstrap.asp"-->
 <%
 response.expires = 0
 call verifiedLogin()
@@ -32,38 +31,32 @@ select case action
         msg_v = validadeFields("Active", type_user_active)
     
         if isempty(msg_v) then  
-           sql = "UPDATE t_type_user SET type_user_description = '" & type_user_description & "', type_user_active = " & type_user_active & " WHERE type_user_id = " & id
-            objConn.Execute(cstr(sql))
+           
            
             call redirect("edit")
             response.end
         end if
 
-    case "create"
-        
+    case "create"        
         msg_v = validadeFields("Description", type_user_description)
         msg_v = validadeFields("Active", type_user_active)
                 
         if isempty(msg_v) then        
-            sql = "INSERT INTO t_type_user (type_user_description, type_user_active) VALUES ('" & type_user_description & "'," & type_user_active & ")"
-            objConn.Execute(cstr(sql))
+            call insertTypeUser(type_user_description , type_user_active)            
             call redirect("create")
             response.end
         end if
 
     case "delete"
         if not isempty(id) then
-            sql = "DELETE t_type_user WHERE type_user_id = " & id
-            objConn.Execute(cstr(sql))
+            call removeTypeUser(id)
             response.write("ok")
             response.end
         end if
     case else
         if ((trim(id) <> "" and not isnull(id)) and isnumeric(id)) then
-
             actionCreate = true
-            sql = "SELECT * FROM t_type_user WHERE type_user_id = " & id
-            Set rs = objConn.Execute(cstr(sql))
+            Set rs = findTypeUser(id)            
             if not rs.EOF then
                 type_user_description   = rs("type_user_description")    
                 type_user_active        = rs("type_user_active")
@@ -94,7 +87,7 @@ end select
                 <input type="hidden" name="id" value="<%=id%>">
                 <div class="form-group required">
                     <label class="control-label" for="description">DESCRIPTION</label>
-                    <input type="text" class="form-control" id="type_user_description" name="type_user_description" value="<%=type_user_description%>" required>
+                    <input type="text" class="form-control" maxlenght="50" size= "50" id="type_user_description" name="type_user_description" value="<%=type_user_description%>" required>
                 </div>                
                 <div class="form-group">
                     <label for="active">ACTIVE</label>

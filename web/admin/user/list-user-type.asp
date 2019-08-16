@@ -1,5 +1,4 @@
-<!--#include virtual="/config/conexao.asp" -->
-<!--#include virtual="/web/src/verifiedLogin.asp"-->
+<!--#include virtual="/config/bootstrap.asp" -->
 <% 
 response.expires = 0
 call verifiedLogin()
@@ -12,6 +11,7 @@ public function isUserRegister(byval id)
 
     sql = "SELECT type_user_id FROM t_user WHERE type_user_id = " & id
     set rs = objConn.Execute(sql)
+
     if not rs.EOF then result = true
     isUserRegister = result
 end function
@@ -28,7 +28,6 @@ end function
     </head>
     <body>
         <!--#include virtual="/web/includes/nav.html"-->
-
         <% if Request.ServerVariables("HTTP_REFERER") <> "" and action <> "" then               
                 if(action = "edit") then
                     msg = "User edited successfully!"
@@ -53,8 +52,7 @@ end function
             <h3 class="text-center">Type Users</h3>            
             <div class="form-group">
                 <a href="form-user-type.asp" class="btn btn-primary">Create</a>  
-            </div>
-          
+            </div>          
             <div class="table-responsive">     
                 <table class="table table-hover table-striped" id="tb" style="width:100%">
                     <thead>
@@ -66,9 +64,8 @@ end function
                     </thead>
                     <tbody>
                     <%
-                    sql = "SELECT * FROM t_type_user"
-                    Set rs = objConn.Execute(sql)                    
                     
+                    Set rs = listTypeUser()                    
                     do while not rs.EOF
                         type_user_description = rs("type_user_description")
                         type_user_id = rs("type_user_id")

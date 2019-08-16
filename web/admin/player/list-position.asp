@@ -1,10 +1,8 @@
-<!--#include virtual="/config/conexao.asp" -->
-<!--#include virtual="/web/src/verifiedLogin.asp"-->
+<!--#include virtual="/config/bootstrap.asp" -->
 <% 
 response.expires = 0
 call verifiedLogin()
 action = session("action")
-
 %>
 <!doctype html>
 <html lang="pt">
@@ -16,7 +14,6 @@ action = session("action")
     </head>
     <body>
         <!--#include virtual="/web/includes/nav.html"-->
-
         <% if Request.ServerVariables("HTTP_REFERER") <> "" and action <> "" then               
                 if(action = "edit") then
                     msg = "User edited successfully!"
@@ -36,13 +33,11 @@ action = session("action")
             </div>
         </div>                
         <% end if%>
-
         <div class="container">        
             <h3 class="text-center">Position Player</h3>            
             <div class="form-group">
                 <a href="form-position.asp" class="btn btn-primary">Create</a>  
-            </div>
-          
+            </div>          
             <div class="table-responsive">     
                 <table class="table table-hover table-striped" id="tb-position" style="width:100%">
                     <thead>
@@ -52,32 +47,28 @@ action = session("action")
                         </tr>
                     </thead>
                     <tbody>
-                    <%
-                    sql = "SELECT * FROM t_position_player"
-                    Set rs = objConn.Execute(sql)                    
-                    
+                    <%                    
+                    Set rs = listPositionPlayer()
                     do while not rs.EOF
-                        name = rs("name")                        
-                        id = rs("position_player_id")
+                        position_player_id      = rs("position_player_id")
+                        position_player_name    = rs("position_player_name")
                         %>
                         <tr>
-                            <td><%=name%></td>                            
+                            <td><%=position_player_name%></td>                            
                             <td>
-                                <a href="form-position.asp?id=<%=id%>" class="btn btn-default" alt="Edit" title="Edit"><i class="fas fa-edit"></i></a>                                
-                                <a href="#" class="btn btn-default" data-id="<%=id%>" data-toggle="modal" data-target="#remove-modal"><i class="fas fa-trash"></i></a>                                
+                                <a href="form-position.asp?id=<%=position_player_id%>" class="btn btn-default" alt="Edit" title="Edit"><i class="fas fa-edit"></i></a>                                
+                                <a href="#" class="btn btn-default" data-id="<%=position_player_id%>" data-toggle="modal" data-target="#remove-modal"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                     <%
                         rs.MoveNext 
                     loop
                     set rs = Nothing
-                    %>
-                    
+                    %>                    
                     </tbody>
                 </table>                
             </div>
         </div>
-
         <!-- Modal -->
         <div class="modal fade" id="remove-modal" tabindex="-1" role="dialog" aria-labelledby="remove-modal" aria-hidden="true">
             <div class="modal-dialog modal-sm" role="dialog">
@@ -113,18 +104,18 @@ action = session("action")
                             method: "POST",
                             url: "form-position.asp",
                             data: {id: id, action: "delete" }
-                        }).done(function(data) {                             
-                           location.reload();                           
+                        }).done(function(data) {        
+                           location.reload();
                         }).fail(function(textStatus) {
                             alert(textStatus);
-                            alert(jqXHR);                        
+                            alert(jqXHR);           
                         });
                     }
                 });
                                 
                 $('.toast').toast('show');
 
-                $('#tb-country').DataTable({
+                $('#tb-position').DataTable({
                     "language": {
                         "lengthMenu": "Display _MENU_ records per page",
                         "zeroRecords": "Nothing found - sorry",

@@ -1,5 +1,4 @@
-<!--#include virtual="/config/conexao.asp"-->
-<!--#include virtual="/web/src/verifiedLogin.asp"-->
+<!--#include virtual="/config/bootstrap.asp"-->
 <%
 response.expires = 0
 call verifiedLogin()
@@ -9,18 +8,19 @@ action = request("action")
 select case action 
     case "delete"               
         if not isempty(id) then
-            sql = "DELETE t_state WHERE state_id = " & id
-            objConn.Execute(sql)            
+            call removeState(id)
             if err.number = 0 then
-                response.write(sql)
+                response.write("ok")
+                response.end
             end if
+            
             response.write(err)
-            response.end            
+            response.end 
         end if
     case "search"               
         if not isempty(id) then
-            sql = "SELECT state_id, state_name FROM t_state WHERE country_id = " & id            
-            Set rs = objConn.Execute(cstr(sql))
+            
+            rs = findState(id)
 
             if err.number = 0 then
                 if not rs.EOF then

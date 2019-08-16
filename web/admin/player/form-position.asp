@@ -1,5 +1,4 @@
-<!--#include virtual="/config/conexao.asp"-->
-<!--#include virtual="/web/src/verifiedLogin.asp"-->
+<!--#include virtual="/config/bootstrap.asp"-->
 <%
 response.expires = 0
 call verifiedLogin()
@@ -7,7 +6,7 @@ id = request("id")
 action = request("action")
 actionCreate = false
 
-name = request.Form("name")
+position_player_name = request.Form("position_player_name")
 
 sub redirect(action)
     session("action") = action
@@ -27,43 +26,36 @@ End function
 dim msg_v
 select case action 
     case "save"        
-        msg_v = validadeFields("Description", name)
-            
-        if isempty(msg_v) then  
-           sql = "UPDATE t_position_player SET name = '" & name &  "' WHERE position_player_id = " & id        
-            objConn.Execute(sql)           
+        msg_v = validadeFields("Description", position_player_name)            
+        if isempty(msg_v) then
+            call updatePositionPlayer(id, position_player_name)
             call redirect("edit")
             response.end
         end if
 
-    case "create"
-        
-        msg_v = validadeFields("Description", name)
-                        
+    case "create"        
+        msg_v = validadeFields("Description", position_player_name)                        
         if isempty(msg_v) then        
-            sql = "INSERT INTO t_position_player (name) VALUES ('" & name & "')"
-            objConn.Execute(sql)
+            call insertPositionPlayer(position_player_name)
             call redirect("create")
             response.end
         end if
 
     case "delete"
         if not isempty(id) then
-            sql = "DELETE t_position_player WHERE position_player_id  = " & id
-            objConn.Execute(sql)
+            call removePositionPlayer(id)
             response.write("ok")
-            response.end            
+            response.end
         end if
     case else
         if ((trim(id) <> "" and not isnull(id)) and isnumeric(id)) then
-
             actionCreate = true
-            sql = "SELECT * FROM t_position_player WHERE position_player_id  = " & id
-            Set rs = objConn.Execute(sql)
+            Set rs = findPositionPlayer(id)            
             if not rs.EOF then
-                name = rs("name")                
+                id = rs("position_player_id")
+                position_player_name = rs("position_player_name")
             end if
-            set rs = Nothing    
+            set rs = Nothing
         end if
 end select
 %>
@@ -87,9 +79,9 @@ end select
         <h1>Register User Type</h1>
             <form method="POST">
                 <input type="hidden" name="id" value="<%=id%>">
-                <div class="form-group">
-                    <label for="name">DESCRIPTION</label>
-                    <input type="text" class="form-control" id="name" name="name" value="<%=name%>" required>
+                <div class="form-group required">
+                    <label class="control-label" for="position_player_name">DESCRIPTION</label>
+                    <input type="text" maxlength="50" size="50" class="form-control" id="position_player_name" name="position_player_name" value="<%=position_player_name%>" required>
                 </div>               
                 
                 <% if id then %>
@@ -97,7 +89,7 @@ end select
                 <%else%>
                     <button type="submit" name="action" class="btn btn-primary" value="create">Create</button>
                 <%end if%>
-                <a href="user-type.asp" class="btn btn-secondary">Voltar</a>
+                <a href="list-position.asp" class="btn btn-secondary">Voltar</a>
             </form>
         </div>        
     </body>

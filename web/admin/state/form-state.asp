@@ -1,5 +1,4 @@
-<!--#include virtual="/config/conexao.asp"-->
-<!--#include virtual="/web/src/verifiedLogin.asp"-->
+<!--#include virtual="/config/bootstrap.asp"-->
 <%
 response.expires = 0
 call verifiedLogin()
@@ -33,9 +32,8 @@ select case action
         msg_v = validadeFields("State",state_name)
         msg_v = validadeFields("Initials",state_initials)
                
-        if isempty(msg_v) then        
-            sql = "UPDATE t_state set state_name = '" & state_name & "', state_initials = '" & state_initials & "', country_id = '" & country_id & "' WHERE state_id = " & id	           
-            objConn.Execute(cstr(sql))
+        if isempty(msg_v) then
+            call updatePositionPlayer(id, state_name, state_initials, country_id)            
             call redirect("edit")
             response.end
         end if
@@ -45,29 +43,27 @@ select case action
         msg_v = validadeFields("Initials",state_initials)
 
         if isempty(msg_v) then        
-            sql = "INSERT INTO t_state (state_name, state_initials, country_id) VALUES ('" & state_name & "','" & state_initials & "'," & country_id & ")"
-            objConn.Execute(cstr(sql))
+            call insertState(state_name, state_initials, country_id)
             call redirect("create")
             response.end
         end if
 
     case "delete"
         if isempty(id) then        
-            sql = "DELETE t_state WHERE state_id = " & id
-            objConn.Execute(cstr(sql))
+            call removeState(id)
             response.write("ok")
             response.end            
         end if
     case else
         if ((trim(id) <> "" and not isnull(id)) and isnumeric(id)) then
             actionCreate = true
-            sql = "SELECT * FROM t_state WHERE state_id = " & id
-            Set rs = objConn.Execute(cstr(sql))
+            
+            Set rs = findState(id)
 
             if not rs.EOF then
-                state_name = rs("state_name")
-                state_initials = rs("state_initials")
+                state_name = rs("state_name")                
                 id_country = rs("country_id")
+                state_initials = rs("state_initials")
             end if
             set rs = Nothing    
         end if
@@ -95,24 +91,22 @@ end select
                 <input type="hidden" name="id" value="<%=id%>">
                 <div class="form-group required">
                     <label class="control-label" for="state_name">State</label>
-                    <input type="text" class="form-control" id="state_name" name="state_name" value="<%=state_name%>" required>
+                    <input type="text" class="form-control" maxlength="50" size="50" id="state_name" name="state_name" value="<%=state_name%>" required>
                 </div>
                 <div class="form-group required">
                     <label class="control-label" for="state_initials">Initials</label>
-                    <input type="text" class="form-control" id="state_initials" maxlength="5" name="state_initials" value="<%=state_initials%>" required>
+                    <input type="text" class="form-control" maxlength="5" size="5"  id="state_initials" name="state_initials" value="<%=state_initials%>" required>
                 </div>                
                 <div class="form-group">
                     <label class="control-label" for="country">Country</label>
                     <select class="form-control" id="country_id" name="country_id">
-                        <%
-                            sql = "SELECT country_id, country_name FROM t_country WHERE country_active = 1"
-                            Set rs = objConn.Execute(cstr(sql))
-
+                        <%                            
+                            Set rs = listCountryActive()
                             do while not rs.EOF                              
                                 country_id = rs("country_id")
                                 country_name = rs("country_name")
                         %>
-                        <option value="<%=country_id%>" <%if id_country = country_id then%> selected="selected" <%end if%>><%=country_name%></option>
+                                <option value="<%=country_id%>" <%if id_country = country_id then%> selected="selected" <%end if%>><%=country_name%></option>
                         <%
                                 rs.MoveNext
                             loop

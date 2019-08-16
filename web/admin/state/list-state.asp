@@ -1,5 +1,4 @@
-<!--#include virtual="/config/conexao.asp" -->
-<!--#include virtual="/web/src/verifiedLogin.asp"-->
+<!--#include virtual="/config/bootstrap.asp" -->
 <% 
 response.expires = 0
 call verifiedLogin()
@@ -53,16 +52,14 @@ action = session("action")
                         </tr>
                     </thead>
                     <tbody>
-                    <%
-                    sql = "SELECT tc.country_name, tc.country_initials_alfa_2, ts.state_name, ts.state_initials,  ts.state_id FROM t_state ts" &_
-                           " INNER JOIN t_country tc ON tc.country_id = ts.country_id  ;"
-                    Set rs = objConn.Execute(cstr(sql))                    
+                    <%                    
+                    Set rs = listState()
                     
                     do while not rs.EOF
                         country_name = rs("country_name")
                         country_initials = rs("country_initials_alfa_2")
                 
-                        state_id        =  rs("state_id")
+                        state_id        = rs("state_id")
                         state_name      = rs("state_name")
                         state_initials  = rs("state_initials")                               
                 
