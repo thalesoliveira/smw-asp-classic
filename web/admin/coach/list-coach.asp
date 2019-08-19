@@ -108,6 +108,24 @@ action = session("action")
                 </div>
             </div>
         </div>
+        <!-- Modal -->
+        <div class="modal fade" id="remove-coach-modal" tabindex="-1" role="dialog" aria-labelledby="remove-coach-modal" aria-hidden="true">
+            <div class="modal-dialog modal-sm" role="dialog">
+                <div class="modal-content panel-warning">
+                    <div class="modal-header panel-heading">
+                        <h5 class="modal-title" id="remove-coach-modal">Remove Coach ?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>      
+                    <div class="modal-footer">        
+                        <button type="button" id="btn-confirm-remove" class="btn btn-danger">Remove</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <div id="dataModal" class="modal fade">  
             <div class="modal-dialog " role="dialog">
