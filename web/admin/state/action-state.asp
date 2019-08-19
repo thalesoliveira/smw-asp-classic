@@ -20,7 +20,7 @@ select case action
     case "search"               
         if not isempty(id) then
             
-            rs = findState(id)
+            SET rs = findStateFromCountry(id)
 
             if err.number = 0 then
                 if not rs.EOF then

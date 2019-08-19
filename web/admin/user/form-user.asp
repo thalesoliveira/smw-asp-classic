@@ -1,5 +1,4 @@
-<!--#include virtual="/config/conexao.asp"-->
-<!--#include virtual="/web/src/verifiedLogin.asp"-->
+<!--#include virtual="/config/bootstrap.asp"-->
 <%
 response.expires = 0
 call verifiedLogin()
@@ -32,29 +31,21 @@ function validadeFields(field, value)
     validadeFields=msg
 End function
 
-action = "delete"
-
 dim msg_v
 select case action 
     case "save"        
         msg_v = validadeFields("First Name",user_first_name)
         msg_v = validadeFields("Last Name",user_last_name)
-        msg_v = validadeFields("User Type",user_type_id)
+        msg_v = validadeFields("User Type",user_id_type)
         msg_v = validadeFields("Mail/Login",user_login)
         msg_v = validadeFields("Country",id_country)
         msg_v = validadeFields("State",id_state)
-        msg_v = validadeFields("Password",user_password)
+       
+        if isempty(msg_v) then             
+            call updateUser(id, user_first_name, user_last_name, user_id_type, id_country, id_state, user_login, user_password)
 
-        if isempty(msg_v) then        
-            sql = "UPDATE t_user set first_name = '" & first_name & "', last_name = '" & last_name & "', type_user_id = '" & userIdType & "' WHERE id = " & id                   
-            objConn.Execute(sql)
-
-            sql = "UPDATE t_user set city = '" & city & "', mail = '" & mail & "', country_id= '" & IdCountry & "', state_id = '" & IdState  & "' WHERE id = " & id    
-            objConn.Execute(sql)            
-
-            if password <> "" then
-                sql = "UPDATE t_user set password_key  = '" & password & "'" & " WHERE id = " & id	           
-                objConn.Execute(sql)
+            if user_password <> "" then
+                call updateUserPassword(id, user_password)                
             end if
 
             call redirect("edit")
@@ -65,34 +56,28 @@ select case action
         
         msg_v = validadeFields("First Name",user_first_name)
         msg_v = validadeFields("Last Name",user_last_name)
-        msg_v = validadeFields("User Type",user_type_id)
+        msg_v = validadeFields("User Type",user_id_type)
         msg_v = validadeFields("Mail/Login",user_login)
         msg_v = validadeFields("Country",id_country)
-        msg_v = validadeFields("State",id_state)
+        msg_v = validadeFields("State",id_state)        
         msg_v = validadeFields("Password",user_password)
 
         if isempty(msg_v) then        
-            sql = "INSERT INTO t_user (user_first_name, user_last_name, type_user_id, country_id, state_id, user_login, user_password) VALUES ('" & user_first_name & "','" & user_last_name & "'," & user_id_type & "," & id_country & "," & id_state & ",'" & user_login & "','" & user_password & "')"
-           
-            objConn.Execute(cstr(sql))
+            call insertUser(user_first_name, user_last_name, user_id_type, country_id, state_id, user_login, user_password)
             call redirect("create")
             response.end
         end if
 
     case "delete"
         if not isempty(id) then
-
-            sql = "DELETE t_user WHERE user_id = " & id
-
-            objConn.Execute(cstr(sql))
+            call removeUser(id)            
             response.write("ok")
             response.end
         end if
     case else
         if ((trim(id) <> "" and not isnull(id)) and isnumeric(id)) then
-            actionCreate = true
-            sql = "SELECT * FROM t_user WHERE user_id = " & id
-            Set rs = objConn.Execute(cstr(sql))
+            actionCreate = true            
+            Set rs = findUser(id)
             if not rs.EOF then                
                 user_first_name = rs("user_first_name")
                 user_last_name  = rs("user_last_name")                
@@ -143,9 +128,8 @@ end select
                 <div class="form-group">
                     <label for="country">User Type</label>
                     <select class="form-control" id="user_type_id" name="user_type_id">
-                        <%
-                            sql = "SELECT * FROM t_type_user WHERE type_user_active = 1"
-                            Set rs = objConn.Execute(cstr(sql))
+                        <%                            
+                            Set rs = listTypeUserActive()
 
                             do while not rs.EOF
                                 type_user_id = rs("type_user_id")
@@ -163,9 +147,8 @@ end select
                     <label for="country">Country</label>
                     <select class="form-control" id="country_id" name="country_id">
                         <option value=""></option>
-                        <%
-                            sql = "SELECT country_id, country_name FROM t_country WHERE country_active = 1"
-                            Set rs = objConn.Execute(cstr(sql))
+                        <%                            
+                            Set rs = listCountryActive()
 
                             do while not rs.EOF
                                 country_id = rs("country_id")
@@ -185,8 +168,8 @@ end select
                     <select class="form-control" id="state_id" name="state_id" style="display: none;"></select>
                 </div>
                 <div class="form-group required">
-                    <label class="control-label" for="password">Password</label>
-                    <input type="password" class="form-control" id="user_password" maxlength="10" name="user_password" value="" <% if id <> "" then response.write("required")%> >
+                    <label <% if id = "" then response.write("class='control-label'")%>  for="password">Password</label>
+                    <input type="password" class="form-control" id="user_password" maxlength="10" name="user_password" value="" <% if id = "" then response.write("required")%> >
                 </div>
                 
                 <% if id then %>
@@ -211,18 +194,18 @@ end select
                 });
 
                 function load_state(){
-                    var id = $('#country_id').val();                    
+                    var country_id = $('#country_id').val();                    
                     var option = '<option value="0"></option>';
                     $(".spinner-border").show();                    
 
-                    if (typeof id !== 'undefined') {
+                    if (typeof country_id !== 'undefined') {
                         $.ajax({
                             method: "POST",
                             url: "../state/action-state.asp",
                             beforeSend: function( xhr ) {
                                 $(".spinner-border").show();
                             },
-                            data: {id: id, action: "search" }
+                            data: {id: country_id, action: "search" }
                         }).done(function(data) {
                             if (data.data.length > 0 ) {                                                            
                                 $.each (data.data, function(i, obj) {

@@ -1,5 +1,4 @@
-<!--#include virtual="/config/conexao.asp"-->
-<!--#include virtual="/web/src/verifiedLogin.asp"-->
+<!--#include virtual="/config/bootstrap.asp"-->
 <%
 response.expires = 0
 response.Charset="ISO-8859-1"
@@ -7,12 +6,7 @@ call verifiedLogin()
 user_id = request("user_id")
 
 if not isempty(user_id) then
-    sql = "SELECT t_user.*, t_type_user.type_user_description, t_country.country_name, t_state.state_name FROM t_user" 
-    sql = sql & " LEFT JOIN t_type_user ON t_type_user.type_user_id = t_user.type_user_id "
-    sql = sql & " LEFT JOIN t_country ON t_country.country_id = t_user.country_id "
-    sql = sql & " LEFT JOIN t_state ON t_state.state_id = t_user.state_id "
-    sql = sql & " WHERE user_id = " & user_id
-    Set rs = objConn.Execute(sql)           
+    Set rs = findUserInfo(user_id) 
     
     if not rs.EOF then
         user_first_name = rs("user_first_name")

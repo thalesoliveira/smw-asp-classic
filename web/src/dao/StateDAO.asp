@@ -6,32 +6,33 @@ public function listState()
 
     set rs=Server.CreateObject("ADODB.recordset")
     rs.Open sql, objConn
+    Set listState = rs 
 
-    if rs.EOF And rs.BOF Then
-        Set listState = Null
-    else
-        Set listState = rs
-    end if
-        
 end function
 
-public function findState(id)
+public function findState(state_id)
     dim rs, sql
     
-    sql = "SELECT * FROM t_state WHERE state_id = " & id
+    sql = "SELECT * FROM t_state WHERE state_id = " & state_id
     set rs=Server.CreateObject("ADODB.recordset")
     rs.Open sql, objConn
-
-    If rs.EOF And rs.BOF Then
-        Set findState = Null        
-    Else
-        Set findState = rs        
-    End If
-
+    Set findState = rs
+ 
 end function
 
-public sub removeState(id)
-    sql = "DELETE t_state WHERE state_id  = " & id
+public function findStateFromCountry(country_id)
+    dim rs, sql
+    
+    sql = "SELECT state_id, state_name FROM t_state WHERE country_id = " & country_id
+    set rs=Server.CreateObject("ADODB.recordset")
+    rs.Open sql, objConn
+    Set findStateFromCountry = rs
+ 
+end function
+
+
+public sub removeState(state_id)
+    sql = "DELETE t_state WHERE state_id  = " & state_id
     objConn.Execute(cstr(sql))
 end sub
 
@@ -40,8 +41,8 @@ public sub insertState(state_name, state_initials, country_id)
     objConn.Execute(cstr(sql))
 end sub
 
-public sub updatePositionPlayer(id, state_name, state_initials, country_id)
-    sql = "UPDATE t_state set state_name = '" & state_name & "', state_initials = '" & state_initials & "', country_id = '" & country_id & "' WHERE state_id = " & id	           
+public sub updatePositionPlayer(state_id, state_name, state_initials, country_id)
+    sql = "UPDATE t_state set state_name = '" & state_name & "', state_initials = '" & state_initials & "', country_id = '" & country_id & "' WHERE state_id = " & state_id
     objConn.Execute(cstr(sql))
 end sub
 

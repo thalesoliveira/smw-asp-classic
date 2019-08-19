@@ -5,32 +5,27 @@ public function listTypeUser()
 
     set rs=Server.CreateObject("ADODB.recordset")
     rs.Open sql, objConn
-
-    if rs.EOF And rs.BOF Then
-        Set listTypeUser = Null
-    else
-        Set listTypeUser = rs
-    end if
-        
+    Set listTypeUser = rs           
 end function
 
-public function findTypeUser(id)
-    dim rs, sql
-    
-    sql = "SELECT * FROM t_type_user WHERE type_user_id = " & id
+public function findTypeUser(type_user_id)
+    dim rs, sql    
+    sql = "SELECT * FROM t_type_user WHERE type_user_id = " & type_user_id
     set rs=Server.CreateObject("ADODB.recordset")
     rs.Open sql, objConn
-
-    If rs.EOF And rs.BOF Then
-        Set findTypeUser = Null        
-    Else
-        Set findTypeUser = rs        
-    End If
-    
+    Set findTypeUser = rs
 end function
 
-public sub removeTypeUser(id)
-    sql = "DELETE t_type_user WHERE type_user_id = " & id
+public function listTypeUserActive()
+    dim rs, sql
+    sql = "SELECT * FROM t_type_user WHERE type_user_active = 1"
+    set rs=Server.CreateObject("ADODB.recordset")
+    rs.Open sql, objConn
+    Set listTypeUserActive = rs   
+end function
+
+public sub removeTypeUser(type_user_id)
+    sql = "DELETE t_type_user WHERE type_user_id = " & type_user_id
     objConn.Execute(cstr(sql))
 end sub
 
@@ -39,8 +34,8 @@ public sub insertTypeUser(type_user_description , type_user_active)
     objConn.Execute(cstr(sql))
 end sub
 
-public sub updateTypeUser(id, type_user_description, type_user_active)
-    sql = "UPDATE t_type_user SET type_user_description = '" & type_user_description & "', type_user_active = " & type_user_active & " WHERE type_user_id = " & id
+public sub updateTypeUser(type_user_id, type_user_description, type_user_active)
+    sql = "UPDATE t_type_user SET type_user_description = '" & type_user_description & "', type_user_active = " & type_user_active & " WHERE type_user_id = " & type_user_id
     objConn.Execute(cstr(sql))
 end sub
 

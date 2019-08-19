@@ -6,3 +6,4 @@
 <!--#include virtual="/web/src/dao/CountryDAO.asp"-->
 <!--#include virtual="/web/src/dao/StateDAO.asp"-->
 <!--#include virtual="/web/src/dao/UserTypeDAO.asp"-->
+<!--#include virtual="/web/src/dao/UserDAO.asp"-->

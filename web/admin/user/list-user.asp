@@ -1,5 +1,4 @@
-<!--#include virtual="/config/conexao.asp" -->
-<!--#include virtual="/web/src/verifiedLogin.asp"-->
+<!--#include virtual="/config/bootstrap.asp" -->
 <% 
 response.expires = 0
 call verifiedLogin()
@@ -53,9 +52,8 @@ action = session("action")
                         </tr>
                     </thead>
                     <tbody>
-                    <%
-                    sql = "SELECT t_user.user_id, user_first_name, type_user_description FROM t_user INNER JOIN t_type_user ON t_type_user.type_user_id = t_user.user_id ;"
-                    Set rs = objConn.Execute(cstr(sql))                    
+                    <%                    
+                    Set rs = listUser()               
                     
                     do while not rs.EOF
                         user_first_name = rs("user_first_name")
