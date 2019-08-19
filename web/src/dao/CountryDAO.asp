@@ -16,6 +16,7 @@ public function listCountryActive()
 end function
 
 public sub updateCountry(country_id , active)
+    dim sql
     sql = "UPDATE t_country set country_active = " & active & " WHERE country_id = " & country_id 
     objConn.Execute(cstr(sql))
 end sub

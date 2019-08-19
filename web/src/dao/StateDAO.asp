@@ -32,16 +32,19 @@ end function
 
 
 public sub removeState(state_id)
+    dim sql
     sql = "DELETE t_state WHERE state_id  = " & state_id
     objConn.Execute(cstr(sql))
 end sub
 
 public sub insertState(state_name, state_initials, country_id)
+    dim sql
     sql = "INSERT INTO t_state (state_name, state_initials, country_id) VALUES ('" & state_name & "','" & state_initials & "'," & country_id & ")"
     objConn.Execute(cstr(sql))
 end sub
 
 public sub updatePositionPlayer(state_id, state_name, state_initials, country_id)
+    dim sql
     sql = "UPDATE t_state set state_name = '" & state_name & "', state_initials = '" & state_initials & "', country_id = '" & country_id & "' WHERE state_id = " & state_id
     objConn.Execute(cstr(sql))
 end sub

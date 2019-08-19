@@ -141,7 +141,7 @@ action = session("action")
                             url: "form-team.asp",
                             data: {id: id, action: "delete" }
                         }).done(function(data) {                             
-                          location.reload();                          
+                            location.reload();                          
                         }).fail(function(textStatus) {
                             alert(textStatus);
                             alert(jqXHR);                        

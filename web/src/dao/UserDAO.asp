@@ -27,18 +27,20 @@ public function findUserInfo(user_id)
     Set findUserInfo = rs
 end function
 
-public sub removeUser(user_id)    
+public sub removeUser(user_id)
+    dim sql  
     sql = "DELETE t_user WHERE user_id = " & user_id
     objConn.Execute(cstr(sql))
 end sub
 
 public sub insertUser(user_first_name, user_last_name, type_user_id, country_id, state_id, user_login, user_password)
+    dim sql
     sql = "INSERT INTO t_user (user_first_name, user_last_name, type_user_id, country_id, state_id, user_login, user_password) VALUES ('" & user_first_name & "','" & user_last_name & "'," & user_id_type & "," & id_country & "," & id_state & ",'" & user_login & "','" & user_password & "')"
     objConn.Execute(cstr(sql))
 end sub
 
 public sub updateUser(user_id, user_first_name, user_last_name, user_type_id, country_id, state_id, user_login, user_password)
-
+    dim sql
     if state_id = "" then state_id = 0
 
     sql = " UPDATE t_user "
@@ -50,6 +52,7 @@ public sub updateUser(user_id, user_first_name, user_last_name, user_type_id, co
 end sub
 
 public sub updateUserPassword(user_id, user_password)
+    dim sql
     sql = "UPDATE t_user set user_password  = '" & user_password  & "'" & " WHERE user_id = " & user_id
     objConn.Execute(cstr(sql))
 end sub

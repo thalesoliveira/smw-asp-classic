@@ -38,30 +38,21 @@ if not isempty(team_id) then
         <span class="font-weight-bold">Country: </span><%= country_name%><br/>
         <span class="font-weight-bold">Founded: </span><%=team_founded_year%><br/>
         <span class="font-weight-bold">Coach: </span><%=coach_name%><br/>
-    </div>
-
-    <% if address_id <> "" then %>
+    </div>    
     <div>
         <span class="font-weight-bold">Address: </span><%=address_name%><br/>
         <span class="font-weight-bold">City: </span><%=address_city%><br/>
         <span class="font-weight-bold">Street: </span><%=address_street%><br/>
         <span class="font-weight-bold">Postal Code: </span><%=address_postal_code %><br/>
-    </div>
-    <% end if%>
-
-    <% if contact_id <> "" then %>
+    </div>    
     <div>
         <span class="font-weight-bold">Mail: </span><%=contact_email%><br/>
         <span class="font-weight-bold">WebSite: </span><%=contact_website%><br/>       
-    </div>
-    <% end if%>
-
-    <% if phone_id <> "" then %>
+    </div>        
     <div>
         <span class="font-weight-bold">Phone: </span><%=phone_ddi%> - <%=phone_number%><br/>        
     </div>
-    <% end if%>
-
+    
 <%
     end if 
     set rs = Nothing
