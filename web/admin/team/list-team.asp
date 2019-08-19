@@ -1,5 +1,4 @@
-<!--#include virtual="/config/conexao.asp" -->
-<!--#include virtual="/web/src/verifiedLogin.asp"-->
+<!--#include virtual="/config/bootstrap.asp" -->
 <% 
 response.expires = 0
 call verifiedLogin()
@@ -53,8 +52,8 @@ action = session("action")
                     </thead>
                     <tbody>
                     <%
-                    sql = "SELECT t_team.*, t_country.country_name, t_country.country_initials_alfa_2 FROM t_team LEFT JOIN t_country ON t_country.country_id = t_team.country_id;"
-                    Set rs = objConn.Execute(cstr(sql))
+                    
+                    Set rs = listTeam()
                     
                     do while not rs.EOF
                         team_id         = rs("team_id")

@@ -1,5 +1,4 @@
-<!--#include virtual="/config/conexao.asp"-->
-<!--#include virtual="/web/src/verifiedLogin.asp"-->
+<!--#include virtual="/config/bootstrap.asp"-->
 <%
 response.expires = 0
 call verifiedLogin()
@@ -210,8 +209,9 @@ select case action
     case else
         if ((trim(id) <> "" and not isnull(id)) and isnumeric(id)) then
             actionCreate = true
-            sql = "SELECT * FROM t_team tt LEFT JOIN t_phone_team tpt ON tpt.team_id = tt.team_id WHERE tt.team_id = " & id
-            Set rs = objConn.Execute(sql)
+           
+            Set rs = findTeamInfo(id)
+            
             if not rs.EOF then                
                 team_name           = rs("team_name")
                 team_description    = rs("team_description")
@@ -222,35 +222,16 @@ select case action
                 contact_id          = rs("contact_id")
                 phone_id            = rs("phone_id")
 
-                if address_id <> "" then
-                    sql = "SELECT * FROM t_address WHERE address_id = " & address_id
-                    Set rs = objConn.Execute(cstr(sql))
-                    if not rs.EOF then                        
-                        address_name        = rs("address_name")
-                        address_city        = rs("address_city")
-                        address_street      = rs("address_street")
-                        address_postal_code = rs("address_postal_code")
-                    end if
-                end if
-
-                if contact_id <> "" then
-                    sql = "SELECT * FROM t_contact WHERE contact_id = " & contact_id
-                    Set rs = objConn.Execute(cstr(sql))
-                    if not rs.EOF then                        
-                        contact_email        = rs("contact_email")
-                        contact_website      = rs("contact_website")
-                    end if
-                end if
-
-                if phone_id <> "" then
-                    sql = "SELECT * FROM t_phone WHERE phone_id = " & phone_id
-                    Set rs = objConn.Execute(cstr(sql))
-                    if not rs.EOF then                        
-                        phone_ddi       = rs("phone_ddi")
-                        phone_number    = rs("phone_number")
-                    end if
-                end if
+                address_name        = rs("address_name")
+                address_city        = rs("address_city")
+                address_street      = rs("address_street")
+                address_postal_code = rs("address_postal_code")                
                 
+                contact_email        = rs("contact_email")
+                contact_website      = rs("contact_website")
+                                        
+                phone_ddi       = rs("phone_ddi")
+                phone_number    = rs("phone_number")                
             end if                    
             set rs = Nothing            
         end if

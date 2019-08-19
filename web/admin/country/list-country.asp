@@ -81,7 +81,7 @@ call verifiedLogin()
                     }
                 });
 
-                loadDataTable("#tb-country");                
+                loadDataTable("#tb-country");            
             });
         </script>
     </body>

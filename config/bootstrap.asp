@@ -7,3 +7,4 @@
 <!--#include virtual="/web/src/dao/StateDAO.asp"-->
 <!--#include virtual="/web/src/dao/UserTypeDAO.asp"-->
 <!--#include virtual="/web/src/dao/UserDAO.asp"-->
+<!--#include virtual="/web/src/dao/TeamDAO.asp"-->
